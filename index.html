@@ -2,596 +2,508 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
-    <title>喵星抵达证明 · 纪念票根打印机（日期可编辑）</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>喵星抵达证明 - 纪念票根打印机</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            user-select: none;
-        }
-
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=ZCOOL+XiaoWei&display=swap');
+        
         body {
+            font-family: 'Noto Serif SC', serif;
+            background: linear-gradient(135deg, #1a1c2e 0%, #2d1b4e 50%, #1a1c2e 100%);
             min-height: 100vh;
-            background: radial-gradient(circle at 10% 20%, #0b1120, #030614);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Segoe UI', 'Poppins', 'Roboto', 'Noto Sans CJK SC', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
-            padding: 1.5rem;
-            position: relative;
         }
-
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background-image: radial-gradient(2px 2px at 20px 30px, #fff, rgba(0,0,0,0)),
-                              radial-gradient(1px 1px at 80px 240px, #f8e3b0, rgba(0,0,0,0));
-            background-size: 200px 200px, 150px 150px;
-            background-repeat: repeat;
-            opacity: 0.4;
-            pointer-events: none;
+        
+        .ticket-texture {
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,215,0,0.02) 0%, transparent 50%);
         }
-
-        .ticket-container {
-            max-width: 560px;
-            width: 100%;
-            filter: drop-shadow(0 20px 35px rgba(0,0,0,0.5));
-            transition: transform 0.2s ease;
-        }
-
-        .ticket-container:hover {
-            transform: translateY(-5px);
-        }
-
-        .ticket {
-            background: linear-gradient(145deg, #fffef7 0%, #fff9eb 100%);
-            border-radius: 32px 32px 28px 28px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 12px 28px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,245,0.8);
-        }
-
-        .ticket::before,
-        .ticket::after {
-            content: '';
-            position: absolute;
-            width: 20px;
+        
+        .perforation {
+            background-image: radial-gradient(circle, transparent 6px, #f5f5dc 6px);
+            background-size: 20px 20px;
+            background-position: center;
             height: 20px;
-            background: radial-gradient(circle at 50% 50%, #030614 8px, transparent 9px);
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 2;
-        }
-        .ticket::before { left: -10px; }
-        .ticket::after { right: -10px; }
-
-        .ticket-header {
-            background: #2c1e3f;
-            background-image: linear-gradient(95deg, #3c2a55 0%, #221a33 100%);
-            padding: 0.9rem 1.8rem;
-            text-align: center;
-            color: #ffecb3;
-            border-bottom: 2px solid #d9b48b;
-        }
-
-        .ticket-header h1 {
-            font-size: 1.8rem;
-            letter-spacing: 3px;
-            font-weight: 700;
-            text-shadow: 0 2px 3px rgba(0,0,0,0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .sub {
-            font-size: 0.7rem;
-            letter-spacing: 2px;
-            opacity: 0.8;
-            margin-top: 5px;
-            font-family: monospace;
-        }
-
-        .ticket-body {
-            padding: 1.8rem 1.8rem 1.5rem;
+            width: 100%;
             position: relative;
         }
-
-        .paw-print {
+        
+        .perforation::before {
+            content: '';
             position: absolute;
-            opacity: 0.1;
-            font-size: 70px;
-            bottom: 15px;
-            right: 15px;
+            top: 50%;
+            left: 0;
+            right: 0;
+            border-top: 2px dashed #d4c4a8;
+        }
+        
+        .stamp {
             transform: rotate(-15deg);
-            pointer-events: none;
+            border: 3px solid #c41e3a;
+            color: #c41e3a;
+            font-weight: 900;
+            letter-spacing: 4px;
+            mask-image: url("data:image/svg+xml,%3Csvg width='200' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.4'/%3E%3C/svg%3E");
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='200' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.4'/%3E%3C/svg%3E");
         }
-
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
-            border-bottom: 1px dashed #e2d5b6;
-            padding-bottom: 12px;
-            margin-bottom: 18px;
+        
+        .cat-silhouette {
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
         }
-
-        .cat-name-section {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: #fcf5e6;
-            padding: 5px 12px;
-            border-radius: 40px;
+        
+        .glow-text {
+            text-shadow: 0 0 20px rgba(255,215,0,0.3), 0 0 40px rgba(255,215,0,0.1);
         }
-
-        .label {
-            font-weight: 600;
-            color: #7a5a4b;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
+        
+        .paper-shadow {
+            box-shadow: 
+                0 1px 1px rgba(0,0,0,0.15), 
+                0 10px 0 -5px #eee, 
+                0 10px 1px -4px rgba(0,0,0,0.15), 
+                0 20px 0 -10px #eee, 
+                0 20px 1px -9px rgba(0,0,0,0.15);
         }
-
-        .cat-name {
-            font-size: 1.35rem;
-            font-weight: 800;
-            color: #4a2a2a;
-            background: transparent;
-            border: none;
-            max-width: 150px;
-            font-family: inherit;
-            display: inline-block;
+        
+        .star-twinkle {
+            animation: twinkle 3s infinite;
         }
-
-        .edit-icon {
-            cursor: pointer;
-            font-size: 0.85rem;
-            background: #e6d9c2;
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.2s;
-            color: #6b4c3b;
-            flex-shrink: 0;
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
         }
-
-        .edit-icon:hover {
-            background: #d8c6a8;
+        
+        .float {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .print-btn:active {
             transform: scale(0.95);
         }
-
-        .arrival-date {
-            background: #f0e9da;
-            padding: 5px 12px;
-            border-radius: 30px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #5f3f2c;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
+        
+        .ticket-paper {
+            background: #f5f5dc;
+            background-image: 
+                linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%),
+                url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%239C92AC' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
         }
-
-        .arrival-date span:first-of-type {
-            font-weight: 700;
-            margin-right: 2px;
-        }
-
-        #arrivalDateDisplay {
-            font-weight: 600;
-            font-family: monospace;
-            letter-spacing: 0.5px;
-        }
-
-        .message-area {
-            background: #fef6e8;
-            border-radius: 28px;
-            padding: 1.4rem 1.2rem;
-            margin: 18px 0 16px;
-            box-shadow: inset 0 0 0 1px rgba(255,245,215,0.9), 0 5px 12px rgba(0,0,0,0.05);
-            border: 1px solid #f1e2ca;
-        }
-
-        .quote-text {
-            font-size: 1rem;
-            line-height: 1.55;
-            color: #38281c;
-            font-weight: 500;
-            text-align: center;
-            letter-spacing: 0.3px;
-            word-break: break-word;
-        }
-
-        .signature {
-            margin-top: 18px;
-            text-align: right;
-            font-size: 0.9rem;
-            color: #a4785c;
+        
+        .handwritten {
+            font-family: 'ZCOOL XiaoWei', 'Noto Serif SC', serif;
             font-style: italic;
-            border-top: 1px dashed #eedbba;
-            padding-top: 12px;
-            font-family: 'KaiTi', ' cursive', 'Segoe UI';
         }
-
-        .ticket-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 10px;
-            padding-top: 8px;
-            font-size: 0.7rem;
-            color: #9a7b62;
-            font-family: monospace;
-            border-top: 1px solid #f0e2ce;
+        
+        .qr-placeholder {
+            background: 
+                linear-gradient(45deg, #000 25%, transparent 25%), 
+                linear-gradient(-45deg, #000 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #000 75%), 
+                linear-gradient(-45deg, transparent 75%, #000 75%);
+            background-size: 10px 10px;
+            background-position: 0 0, 0 5px, 5px -5px, -5px 0px;
+            background-color: white;
         }
-
-        .ticket-id {
-            background: #f4ecdd;
-            padding: 4px 8px;
-            border-radius: 20px;
-            letter-spacing: 0.5px;
+        
+        .tear-edge {
+            clip-path: polygon(
+                0% 0%, 5% 1%, 10% 0%, 15% 1%, 20% 0%, 25% 1%, 30% 0%, 35% 1%, 
+                40% 0%, 45% 1%, 50% 0%, 55% 1%, 60% 0%, 65% 1%, 70% 0%, 75% 1%, 
+                80% 0%, 85% 1%, 90% 0%, 95% 1%, 100% 0%, 100% 100%, 95% 99%, 
+                90% 100%, 85% 99%, 80% 100%, 75% 99%, 70% 100%, 65% 99%, 
+                60% 100%, 55% 99%, 50% 100%, 45% 99%, 40% 100%, 35% 99%, 
+                30% 100%, 25% 99%, 20% 100%, 15% 99%, 10% 100%, 5% 99%, 0% 100%
+            );
         }
-
-        .stamp {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            background: #fae6cf;
-            padding: 3px 10px;
-            border-radius: 30px;
-            font-weight: bold;
-            color: #b46f3a;
-            transform: rotate(-2deg);
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #d4a574;
+            box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.2);
         }
-
-        .button-bar {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            padding: 1.2rem 1.8rem 1.8rem;
-            background: #fff9ef;
-            border-top: 1px solid #f5e8d4;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            border: none;
-            background: #e8dccc;
-            padding: 10px 24px;
-            border-radius: 48px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            font-family: inherit;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: #3d2b1f;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .btn-primary {
-            background: #9b6a4b;
-            color: #fff8e7;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-        }
-
-        .btn-primary:hover {
-            background: #7e543b;
-            transform: translateY(-2px);
-        }
-
-        .btn-secondary:hover {
-            background: #e7d6be;
-            transform: translateY(-2px);
-        }
-
-        @media print {
-            body {
-                background: white;
-                padding: 0;
-                margin: 0;
-            }
-            body::before { display: none; }
-            .button-bar, .edit-icon, .btn, .paw-print { display: none !important; }
-            .ticket-container {
-                max-width: 100%;
-                margin: 0 auto;
-                box-shadow: none;
-                transform: none;
-            }
-            .ticket {
-                background: white;
-                border: 1px solid #ccc;
-                box-shadow: none;
-                border-radius: 12px;
-            }
-            .ticket::before, .ticket::after { display: none; }
-            .ticket-header {
-                background: #2c1e3f;
-                color: white;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-            .message-area, .cat-name-section, .arrival-date, .stamp {
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-        }
-
-        @keyframes softGlow {
-            0% { text-shadow: 0 0 0px rgba(255,215,150,0);}
-            100% { text-shadow: 0 0 4px rgba(255,215,150,0.6);}
-        }
-        .quote-text {
-            animation: softGlow 1.2s ease-out;
+        
+        .select-arrow {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            appearance: none;
         }
     </style>
+<base target="_blank">
 </head>
-<body>
-<div class="ticket-container">
-    <div class="ticket">
-        <div class="ticket-header">
-            <h1>
-                <span>🐾</span> 喵星抵达证明 <span>✨</span>
-            </h1>
-            <div class="sub">THE MEOW STAR ARRIVAL CERTIFICATE</div>
-        </div>
+<body class="antialiased overflow-x-hidden">
 
-        <div class="ticket-body">
-            <div class="paw-print">🐾🐾</div>
-            <!-- 猫咪姓名 + 抵达日期 -->
-            <div class="info-row">
-                <div class="cat-name-section">
-                    <span class="label">🐱 星际旅喵</span>
-                    <span class="cat-name" id="catNameDisplay">小咪</span>
-                    <div class="edit-icon" id="editNameBtn" title="编辑猫咪名字">✎</div>
+    <!-- 背景星星 -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden">
+        <div class="star-twinkle absolute top-10 left-10 text-yellow-200 text-2xl opacity-60">✦</div>
+        <div class="star-twinkle absolute top-32 right-20 text-yellow-100 text-lg opacity-40" style="animation-delay: 1s;">✧</div>
+        <div class="star-twinkle absolute top-60 left-1/4 text-white text-xl opacity-30" style="animation-delay: 2s;">✦</div>
+        <div class="star-twinkle absolute bottom-40 right-1/3 text-yellow-200 text-2xl opacity-50" style="animation-delay: 1.5s;">✧</div>
+        <div class="star-twinkle absolute top-20 left-2/3 text-white text-lg opacity-40" style="animation-delay: 0.5s;">✦</div>
+    </div>
+
+    <div class="relative z-10 container mx-auto px-4 py-8 max-w-6xl">
+        
+        <!-- 标题区 -->
+        <header class="text-center mb-12 float">
+            <div class="inline-block relative">
+                <h1 class="text-4xl md:text-6xl font-black text-yellow-100 glow-text tracking-widest mb-2" style="font-family: 'ZCOOL XiaoWei', serif;">
+                    喵星抵达证明
+                </h1>
+                <div class="text-yellow-200/60 text-sm md:text-base tracking-[0.5em] uppercase mt-2">Meow Star Arrival Certificate</div>
+                <div class="absolute -top-6 -right-8 text-4xl animate-bounce" style="animation-duration: 3s;">🐾</div>
+            </div>
+            <p class="text-purple-200/70 mt-4 text-sm md:text-base max-w-lg mx-auto leading-relaxed">
+                每一只离去的喵星人，都会化作喵星的一颗星。<br>
+                在这里，为它们打印一张抵达证明，也为主人留下一句温暖的寄语。
+            </p>
+        </header>
+
+        <div class="grid lg:grid-cols-2 gap-12 items-start">
+            
+            <!-- 左侧：配置面板 -->
+            <div class="space-y-6">
+                <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-white/10 shadow-2xl">
+                    <h2 class="text-xl font-bold text-yellow-100 mb-6 flex items-center gap-2">
+                        <span class="text-2xl">🎫</span> 票根信息填写
+                    </h2>
+                    
+                    <div class="space-y-5">
+                        <div>
+                            <label class="block text-purple-200 text-sm mb-2 font-medium">喵星人姓名</label>
+                            <input type="text" id="catName" placeholder="例如：咪咪、橘子、汤圆..." 
+                                class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-yellow-50 placeholder-white/30 transition-all">
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-purple-200 text-sm mb-2 font-medium">抵达日期</label>
+                                <input type="date" id="arrivalDate" 
+                                    class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-yellow-50 placeholder-white/30 transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-purple-200 text-sm mb-2 font-medium">星座（可选）</label>
+                                <select id="catSign" class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-yellow-50 select-arrow transition-all">
+                                    <option value="">选择星座</option>
+                                    <option value="白羊座">♈ 白羊座</option>
+                                    <option value="金牛座">♉ 金牛座</option>
+                                    <option value="双子座">♊ 双子座</option>
+                                    <option value="巨蟹座">♋ 巨蟹座</option>
+                                    <option value="狮子座">♌ 狮子座</option>
+                                    <option value="处女座">♍ 处女座</option>
+                                    <option value="天秤座">♎ 天秤座</option>
+                                    <option value="天蝎座">♏ 天蝎座</option>
+                                    <option value="射手座">♐ 射手座</option>
+                                    <option value="摩羯座">♑ 摩羯座</option>
+                                    <option value="水瓶座">♒ 水瓶座</option>
+                                    <option value="双鱼座">♓ 双鱼座</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-purple-200 text-sm mb-2 font-medium">寄语风格</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button onclick="setStyle('gentle')" class="style-btn active px-3 py-2 rounded-lg border border-white/20 text-sm text-yellow-100 hover:bg-white/10 transition-all bg-white/20" data-style="gentle">温柔抚慰</button>
+                                <button onclick="setStyle('cheerful')" class="style-btn px-3 py-2 rounded-lg border border-white/20 text-sm text-yellow-100 hover:bg-white/10 transition-all" data-style="cheerful">俏皮可爱</button>
+                                <button onclick="setStyle('poetic')" class="style-btn px-3 py-2 rounded-lg border border-white/20 text-sm text-yellow-100 hover:bg-white/10 transition-all" data-style="poetic">诗意深沉</button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-purple-200 text-sm mb-2 font-medium">自定义寄语（可选，留空则随机生成）</label>
+                            <textarea id="customMessage" rows="3" placeholder="想对主人说的悄悄话..." 
+                                class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-yellow-50 placeholder-white/30 transition-all resize-none"></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-purple-200 text-sm mb-2 font-medium">主人称呼</label>
+                            <input type="text" id="ownerName" placeholder="例如：铲屎官、妈妈、爸爸..." 
+                                class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-yellow-50 placeholder-white/30 transition-all">
+                        </div>
+
+                        <button onclick="generateTicket()" 
+                            class="print-btn w-full bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-500 hover:to-yellow-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-yellow-900/30 transition-all flex items-center justify-center gap-2 text-lg">
+                            <span>🖨️</span> 生成纪念票根
+                        </button>
+                    </div>
                 </div>
-                <div class="arrival-date">
-                    <span>📅 抵达日</span>
-                    <span id="arrivalDateDisplay"></span>
-                    <div class="edit-icon" id="editDateBtn" title="编辑抵达日期">✎</div>
+
+                <!-- 使用说明 -->
+                <div class="bg-white/5 backdrop-blur-sm rounded-xl p-5 border border-white/10 text-sm text-purple-200/60">
+                    <h3 class="text-yellow-200/80 font-bold mb-2 flex items-center gap-2">
+                        <span>💡</span> 使用说明
+                    </h3>
+                    <ul class="space-y-1.5 list-disc list-inside">
+                        <li>填写喵星人的名字和抵达喵星的日期</li>
+                        <li>选择寄语风格或输入你想对主人说的话</li>
+                        <li>点击"生成纪念票根"预览效果</li>
+                        <li>在预览区右键保存图片，或使用浏览器打印功能（Ctrl+P）打印实体票根</li>
+                    </ul>
                 </div>
             </div>
 
-            <div class="message-area">
-                <div class="quote-text" id="quoteText">
-                    我已经抵达喵星啦！这里到处都是柔软的云朵和永远玩不腻的毛线球。别担心我，你要记得每天开开心心的。
-                </div>
-                <div class="signature" id="signatureLine">
-                    —— 永远爱你的 小咪
+            <!-- 右侧：票根预览 -->
+            <div class="lg:sticky lg:top-8">
+                <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-white/10 shadow-2xl">
+                    <h2 class="text-xl font-bold text-yellow-100 mb-6 flex items-center gap-2">
+                        <span class="text-2xl">🎟️</span> 预览区域
+                    </h2>
+                    
+                    <div id="ticketContainer" class="flex justify-center">
+                        <!-- 默认空状态 -->
+                        <div class="text-center py-12 text-white/30">
+                            <div class="text-6xl mb-4">🐱</div>
+                            <p>请填写左侧信息并点击生成</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <div class="ticket-footer">
-                <div class="ticket-id">
-                    🌠 票号：<span id="ticketNumber">MW-1024-喵</span>
-                </div>
-                <div class="stamp">
-                    🌟 喵星入境章 🌟
-                </div>
-            </div>
-        </div>
-
-        <div class="button-bar">
-            <button class="btn btn-secondary" id="randomMsgBtn">✨ 随机寄语 ✨</button>
-            <button class="btn btn-primary" id="printBtn">🖨️ 打印纪念票根 🖨️</button>
         </div>
     </div>
-</div>
 
-<script>
-    // ======================= 温馨寄语库 =======================
-    const MESSAGE_POOL = [
-        "我已经顺利抵达喵星啦！这里到处都是软乎乎的云朵枕头和永远吃不完的小鱼干。别总哭鼻子哦，你笑起来的时候，我才能在彩虹上看得更清楚～",
-        "亲爱的，我的地球任务已完成，现在是无忧无虑的喵星小天使。你要替我好好吃饭，好好睡觉，带着我们的回忆继续热爱生活，我会在星空中守护你。",
-        "喵～这里的银河会唱歌，星星是会发光的逗猫棒！不用担心我啦，答应我，把眼泪变成笑容，替我尝遍人间美食，看遍四季风景。",
-        "谢谢你给我一个温暖的家。我现在每天在喵星晒太阳、追流星。请不要再自责，你给了我最好的一生。接下来，请好好爱自己，我也会在梦里蹭蹭你。",
-        "嘿！铲屎官，我在这里认识了好多新朋友，我们经常一起在月光下跑酷。你要向前走哦，带着我的那份勇敢，继续好好生活，这是我最想收到的礼物。",
-        "喵星没有病痛，只有永远玩不腻的毛线球和温柔的风。我很好，所以你也一定要好好的。按时回家，盖好被子，我会化作窗外的星光陪着你。",
-        "我走过了彩虹桥，现在是一名酷酷的喵星居民啦！不要一直沉浸在悲伤里，你还有很长的路要走，记得多晒太阳，多微笑，我会一直爱你。",
-        "喵呜～这里每天都像春天的午后那么舒服。别担心我没罐头，这里的星星罐头无限量！但你一定要替我好好吃每一顿饭，健康快乐地过好每一天。",
-        "我收到了你所有的爱，它们变成翅膀帮我抵达这里。你也要继续幸福下去，因为我最爱的就是你充满元气的样子。要加油哦，我的专属人类。",
-        "我已经把痛苦留在了地球，现在轻盈得像一朵云。谢谢你陪我走过那段时光，如今请把温柔留给自己。当你想我时，抬头看看夜空，最亮的那颗是我在眨眼。",
-        "喵星政府认证：你是满分主人！这里有小鱼干云、彩虹滑梯，不用担心我。你也要按时下班，和朋友欢笑，好好照顾自己，不然我会喵喵叫提醒你的。",
-        "终于抵达啦，这趟旅程很安心。因为我带着你的爱。请继续向前走吧，带着我曾带给你的快乐。你值得世间所有美好，我会在喵星为你摇旗呐喊～"
-    ];
+    <script>
+        // 寄语库
+        const messages = {
+            gentle: [
+                "主人，我在喵星一切都好。这里的阳光永远温暖，罐头永远管够。你不要总是哭鼻子哦，我会一直趴在云朵上看着你。记得按时吃饭，好好睡觉，这样我才能放心地做我的小天使。",
+                "亲爱的铲屎官，喵星的门铃是我按响的。这里有很多新朋友，但我最想念的还是你膝盖的温度。不要太快忘记我，但也不要让悲伤停留太久。你要替我多吃几个罐头，看更多的日落。",
+                "我到了，这里比想象中还要漂亮。有永远追不完的激光点，和永远不会打翻的猫爬架。主人，我把九条命都换成了守护你的星星。晚上抬头看看天空，最亮的那颗就是我。",
+                "不要为我难过太久哦。我只是提前去喵星占了个好位置，等你很久很久以后来的时候，我就来接你。在那之前，要替我好好爱这个世界，爱新的猫咪，也爱你自己。"
+            ],
+            cheerful: [
+                "报告铲屎官！本喵已成功登陆喵星！这里的WiFi信号满格，小鱼干无限量供应！你在地球要好好搬砖，给我买不了罐头了但你要给自己买好吃的！不许偷懒不铲...啊不对，你现在不用铲了！开心点！",
+                "嗨！是我！我已经在喵星混成老大了！这里的猫都得听我的，因为我有最棒的主人教我的本领。你要继续威风哦，别被别的猫（或者人）欺负了！我会从星星上给你发射好运光线的！biu~",
+                "主人主人！喵星的云是棉花糖味的！我每天都在这里跑酷，没有沙发可以抓，但有彩虹可以爬！你不要太想我，想我的时候就吃顿好的，就当是替我吃的！爱你喵！",
+                "叮咚~你的小可爱已抵达目的地！五星好评！喵星服务很好，就是有点想你。不过没关系，我派了一只蝴蝶、一片落叶、一阵微风当你的新保镖，它们都是我哦！"
+            ],
+            poetic: [
+                "我穿越了那道彩虹桥，抵达了没有离别的地方。这里的月光是银色的毛线，银河是流淌的猫薄荷。主人，生命是不断的相遇与告别，而我只是提前去了下一个转角。当你感到一阵莫名的温暖，那就是我。",
+                "从这一刻起，我成为了永恒的一部分。化作春泥，化作晨露，化作你窗台上那一缕不肯离去的夕阳。不要寻找我，我无处不在。在每一声喵呜的回响里，在每一个温柔的梦境边缘。",
+                "死亡不是终点，遗忘才是。所以请你记得我，但不必沉溺于悲伤。我是你爱过的一只猫，这本身就是宇宙间最了不起的奇迹。现在，让我成为守护你的星尘，直到时间的尽头。",
+                "我卸下了沉重的肉身，化作轻盈的光。喵星没有钟表，所以我不会老去；没有围墙，所以我自由奔跑。而你在地球上的每一次微笑，都会变成我这里的星光。请多微笑，为了我。"
+            ]
+        };
 
-    let currentCatName = "小咪";
-    let currentMessageIndex = 0;
-    let currentTicketId = generateTicketId();
-    let currentArrivalDateStr = "";
+        let currentStyle = 'gentle';
 
-    // DOM 元素
-    const catNameDisplaySpan = document.getElementById('catNameDisplay');
-    const quoteTextDiv = document.getElementById('quoteText');
-    const signatureLineDiv = document.getElementById('signatureLine');
-    const ticketNumberSpan = document.getElementById('ticketNumber');
-    const arrivalDateDisplaySpan = document.getElementById('arrivalDateDisplay');
-
-    // 生成随机票号
-    function generateTicketId() {
-        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789';
-        let randomStr = '';
-        for (let i = 0; i < 4; i++) {
-            randomStr += chars[Math.floor(Math.random() * chars.length)];
-        }
-        const starEmojis = ['🌟', '✨', '🌙', '🐱', '⭐'];
-        const emoji = starEmojis[Math.floor(Math.random() * starEmojis.length)];
-        return `MW-${randomStr}-${emoji}`;
-    }
-
-    // 获取当前系统日期 (格式: YYYY年MM月DD日)
-    function getTodayFormatted() {
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, '0');
-        const day = String(today.getDate()).padStart(2, '0');
-        return `${year}年${month}月${day}日`;
-    }
-
-    // 设置抵达日期显示
-    function setArrivalDateDisplay(dateStr) {
-        if (!dateStr || dateStr.trim() === "") {
-            currentArrivalDateStr = getTodayFormatted();
-        } else {
-            currentArrivalDateStr = dateStr;
-        }
-        arrivalDateDisplaySpan.innerText = currentArrivalDateStr;
-    }
-
-    // 解析用户输入的日期 (支持 "2026年04月22日" 或 "2026-04-22")
-    function parseDateInput(input) {
-        input = input.trim();
-        // 匹配 YYYY年MM月DD日
-        let match = input.match(/(\d{4})年(\d{1,2})月(\d{1,2})日/);
-        if (match) {
-            let year = match[1];
-            let month = match[2].padStart(2, '0');
-            let day = match[3].padStart(2, '0');
-            return `${year}年${month}月${day}日`;
-        }
-        // 匹配 YYYY-MM-DD
-        match = input.match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
-        if (match) {
-            let year = match[1];
-            let month = match[2].padStart(2, '0');
-            let day = match[3].padStart(2, '0');
-            return `${year}年${month}月${day}日`;
-        }
-        // 匹配 YYYY/MM/DD
-        match = input.match(/(\d{4})\/(\d{1,2})\/(\d{1,2})/);
-        if (match) {
-            let year = match[1];
-            let month = match[2].padStart(2, '0');
-            let day = match[3].padStart(2, '0');
-            return `${year}年${month}月${day}日`;
-        }
-        return null;
-    }
-
-    // 编辑抵达日期 (使用 prompt，兼容所有浏览器)
-    function editArrivalDate() {
-        let defaultDate = currentArrivalDateStr;
-        let userInput = prompt("✏️ 请编辑抵达日期\n\n格式示例：\n2026年04月22日 或 2026-04-22 或 2026/04/22\n\n当前日期：" + defaultDate, defaultDate);
-        if (userInput === null) return; // 用户取消
-
-        let parsed = parseDateInput(userInput);
-        if (parsed) {
-            setArrivalDateDisplay(parsed);
-        } else {
-            alert("❌ 日期格式不正确！请使用“YYYY年MM月DD日”或“YYYY-MM-DD”格式。\n例如：2026年04月22日 或 2026-04-22");
-        }
-    }
-
-    // 更新寄语和签名
-    function updateMessageDisplay() {
-        let selectedMsg = MESSAGE_POOL[currentMessageIndex];
-        if (!selectedMsg) selectedMsg = MESSAGE_POOL[0];
-        quoteTextDiv.innerText = selectedMsg;
-        const catNameForSign = currentCatName.trim() === "" ? "小毛球" : currentCatName;
-        signatureLineDiv.innerHTML = `—— 永远爱你的 ${catNameForSign} 🐾`;
-    }
-
-    // 随机寄语
-    function randomMessage() {
-        const newIndex = Math.floor(Math.random() * MESSAGE_POOL.length);
-        if (MESSAGE_POOL.length > 1 && newIndex === currentMessageIndex) {
-            currentMessageIndex = (newIndex + 1) % MESSAGE_POOL.length;
-        } else {
-            currentMessageIndex = newIndex;
-        }
-        currentTicketId = generateTicketId();
-        ticketNumberSpan.innerText = currentTicketId;
-        updateMessageDisplay();
-        // 轻动画
-        quoteTextDiv.style.animation = 'none';
-        quoteTextDiv.offsetHeight;
-        quoteTextDiv.style.animation = 'softGlow 0.6s ease-out';
-        setTimeout(() => {
-            quoteTextDiv.style.animation = '';
-        }, 600);
-    }
-
-    // 设置猫咪名字
-    function setCatName(newName) {
-        if (newName && newName.trim() !== "") {
-            currentCatName = newName.trim();
-        } else {
-            currentCatName = "小咪";
-        }
-        catNameDisplaySpan.innerText = currentCatName;
-        updateMessageDisplay();
-    }
-
-    // 编辑猫咪名字
-    function editCatName() {
-        let newName = prompt("🐱 请输入你家宝贝猫咪的名字：", currentCatName);
-        if (newName !== null) {
-            if (newName.length > 20) newName = newName.slice(0, 20);
-            setCatName(newName);
-        }
-    }
-
-    // 打印票根
-    function printTicket() {
-        window.print();
-    }
-
-    // 初始化
-    function initTicket() {
-        setArrivalDateDisplay(getTodayFormatted());   // 默认今天
-        currentMessageIndex = Math.floor(Math.random() * MESSAGE_POOL.length);
-        currentTicketId = generateTicketId();
-        ticketNumberSpan.innerText = currentTicketId;
-        setCatName("小咪");
-        updateMessageDisplay();
-    }
-
-    // 绑定事件
-    function bindEvents() {
-        const randomBtn = document.getElementById('randomMsgBtn');
-        const printBtn = document.getElementById('printBtn');
-        const editNameBtn = document.getElementById('editNameBtn');
-        const editDateBtn = document.getElementById('editDateBtn');
-        if (randomBtn) randomBtn.addEventListener('click', randomMessage);
-        if (printBtn) printBtn.addEventListener('click', printTicket);
-        if (editNameBtn) editNameBtn.addEventListener('click', editCatName);
-        if (editDateBtn) editDateBtn.addEventListener('click', editArrivalDate);
-    }
-
-    // 小彩蛋：印章悬停效果
-    function addHoverSpark() {
-        const ticketDiv = document.querySelector('.ticket');
-        if (ticketDiv) {
-            ticketDiv.addEventListener('mouseenter', () => {
-                const stamp = document.querySelector('.stamp');
-                if (stamp) stamp.style.transform = 'rotate(0deg) scale(1.02)';
-            });
-            ticketDiv.addEventListener('mouseleave', () => {
-                const stamp = document.querySelector('.stamp');
-                if (stamp) stamp.style.transform = 'rotate(-2deg)';
+        function setStyle(style) {
+            currentStyle = style;
+            document.querySelectorAll('.style-btn').forEach(btn => {
+                if(btn.dataset.style === style) {
+                    btn.classList.add('bg-white/20', 'border-yellow-400/50');
+                    btn.classList.remove('border-white/20');
+                } else {
+                    btn.classList.remove('bg-white/20', 'border-yellow-400/50');
+                    btn.classList.add('border-white/20');
+                }
             });
         }
-    }
 
-    function start() {
-        bindEvents();
-        initTicket();
-        addHoverSpark();
-    }
-    start();
-</script>
+        // 初始化日期为今天
+        document.getElementById('arrivalDate').valueAsDate = new Date();
+
+        function generateTicketId() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            let id = 'MEOW-';
+            for(let i=0; i<6; i++) id += chars[Math.floor(Math.random()*chars.length)];
+            return id;
+        }
+
+        function generateQR() {
+            // 生成一个随机的"二维码"SVG图案
+            const size = 80;
+            let rects = '';
+            const cellSize = size / 25;
+            for(let i=0; i<25; i++) {
+                for(let j=0; j<25; j++) {
+                    if(Math.random() > 0.5) {
+                        rects += `<rect x="${i*cellSize}" y="${j*cellSize}" width="${cellSize}" height="${cellSize}" fill="#2d2d2d"/>`;
+                    }
+                }
+            }
+            // 添加定位点
+            const pos = [
+                [2,2,7], [16,2,7], [2,16,7]
+            ];
+            pos.forEach(([x,y,s]) => {
+                rects += `<rect x="${x*cellSize}" y="${y*cellSize}" width="${s*cellSize}" height="${s*cellSize}" fill="none" stroke="#2d2d2d" stroke-width="${cellSize}"/>`;
+                rects += `<rect x="${(x+1)*cellSize}" y="${(y+1)*cellSize}" width="${(s-2)*cellSize}" height="${(s-2)*cellSize}" fill="#2d2d2d"/>`;
+                rects += `<rect x="${(x+2)*cellSize}" y="${(y+2)*cellSize}" width="${(s-4)*cellSize}" height="${(s-4)*cellSize}" fill="none" stroke="#2d2d2d" stroke-width="${cellSize}"/>`;
+            });
+            
+            return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='${size}' height='${size}'%3E${rects}%3C/svg%3E`;
+        }
+
+        function generateTicket() {
+            const catName = document.getElementById('catName').value || '未知喵星人';
+            const arrivalDate = document.getElementById('arrivalDate').value || new Date().toISOString().split('T')[0];
+            const catSign = document.getElementById('catSign').value;
+            const customMsg = document.getElementById('customMessage').value;
+            const ownerName = document.getElementById('ownerName').value || '铲屎官';
+            
+            const dateObj = new Date(arrivalDate);
+            const dateStr = `${dateObj.getFullYear()}年${dateObj.getMonth()+1}月${dateObj.getDate()}日`;
+            
+            // 选择寄语
+            let finalMessage;
+            if(customMsg.trim()) {
+                finalMessage = customMsg;
+            } else {
+                const pool = messages[currentStyle];
+                finalMessage = pool[Math.floor(Math.random() * pool.length)];
+            }
+            
+            const ticketId = generateTicketId();
+            const qrData = generateQR();
+            
+            // 星座显示
+            const signHtml = catSign ? `<span class="mx-2 text-yellow-700/40">|</span><span class="text-yellow-800">${catSign}</span>` : '';
+            
+            const ticketHTML = `
+                <div class="ticket-paper w-full max-w-md mx-auto rounded-lg shadow-2xl overflow-hidden relative tear-edge" style="min-height: 600px;">
+                    <!-- 顶部装饰 -->
+                    <div class="h-2 bg-gradient-to-r from-yellow-700 via-yellow-600 to-yellow-700"></div>
+                    
+                    <!-- 票根内容 -->
+                    <div class="p-8 ticket-texture">
+                        <!-- 标题区 -->
+                        <div class="text-center mb-6 relative">
+                            <div class="absolute -top-2 -right-2 stamp px-3 py-1 text-xs rounded opacity-60">已抵达</div>
+                            <div class="text-4xl mb-2">🌟</div>
+                            <h3 class="text-2xl font-black text-yellow-900 tracking-widest" style="font-family: 'ZCOOL XiaoWei', serif;">喵星抵达证明</h3>
+                            <div class="text-xs text-yellow-700/60 mt-1 tracking-[0.3em]">ARRIVAL CERTIFICATE</div>
+                        </div>
+                        
+                        <!-- 分割线 -->
+                        <div class="perforation mb-6"></div>
+                        
+                        <!-- 乘客信息 -->
+                        <div class="bg-yellow-900/5 rounded-lg p-4 mb-6 border border-yellow-900/10">
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <div class="text-xs text-yellow-700/60 uppercase tracking-wider mb-1">Passenger Name</div>
+                                    <div class="text-xl font-bold text-yellow-900">${catName}</div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-xs text-yellow-700/60 uppercase tracking-wider mb-1">Class</div>
+                                    <div class="text-sm font-bold text-yellow-800">头等舱</div>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-end">
+                                <div>
+                                    <div class="text-xs text-yellow-700/60 uppercase tracking-wider mb-1">Date of Arrival</div>
+                                    <div class="text-sm font-bold text-yellow-900">${dateStr}</div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-xs text-yellow-700/60 uppercase tracking-wider mb-1">Constellation</div>
+                                    <div class="text-sm font-bold text-yellow-800">${catSign || '喵座'}</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 寄语区 -->
+                        <div class="mb-6 relative">
+                            <div class="absolute -top-3 left-4 bg-[#f5f5dc] px-2 text-xs text-yellow-700/60 uppercase tracking-wider">Message to Earth</div>
+                            <div class="border-2 border-yellow-900/20 rounded-lg p-4 pt-5">
+                                <p class="handwritten text-yellow-900 leading-relaxed text-sm md:text-base">
+                                    ${finalMessage}
+                                </p>
+                                <div class="text-right mt-3 text-yellow-800/60 text-sm handwritten">
+                                    —— 爱你的 ${catName}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 主人信息 -->
+                        <div class="flex items-center gap-3 mb-6 bg-yellow-900/5 rounded-lg p-3 border border-yellow-900/10">
+                            <div class="w-10 h-10 rounded-full bg-yellow-800/20 flex items-center justify-center text-xl">👤</div>
+                            <div>
+                                <div class="text-xs text-yellow-700/60">Recipient (Owner)</div>
+                                <div class="text-sm font-bold text-yellow-900">${ownerName} 收</div>
+                            </div>
+                        </div>
+                        
+                        <!-- 底部信息 -->
+                        <div class="flex justify-between items-end">
+                            <div class="space-y-1">
+                                <div class="text-[10px] text-yellow-700/40 tracking-wider">TICKET NO.</div>
+                                <div class="text-xs font-mono font-bold text-yellow-800 tracking-widest">${ticketId}</div>
+                                <div class="text-[10px] text-yellow-700/40 mt-2">ISSUED BY MEOW STAR ALLIANCE</div>
+                            </div>
+                            <div class="w-20 h-20 opacity-80">
+                                <img src="${qrData}" alt="QR" class="w-full h-full">
+                            </div>
+                        </div>
+                        
+                        <!-- 猫爪印装饰 -->
+                        <div class="absolute bottom-4 left-4 opacity-10 text-6xl rotate-12">🐾</div>
+                        <div class="absolute top-1/3 right-4 opacity-10 text-4xl -rotate-12">🐾</div>
+                    </div>
+                    
+                    <!-- 底部锯齿 -->
+                    <div class="h-4 bg-gradient-to-r from-yellow-700 via-yellow-600 to-yellow-700"></div>
+                </div>
+                
+                <!-- 操作按钮 -->
+                <div class="mt-6 flex gap-3 justify-center">
+                    <button onclick="window.print()" class="bg-white/10 hover:bg-white/20 text-yellow-100 px-6 py-2 rounded-lg border border-white/20 transition-all flex items-center gap-2 text-sm">
+                        <span>🖨️</span> 打印 / 保存PDF
+                    </button>
+                    <button onclick="generateTicket()" class="bg-white/10 hover:bg-white/20 text-yellow-100 px-6 py-2 rounded-lg border border-white/20 transition-all flex items-center gap-2 text-sm">
+                        <span>🔄</span> 换一句寄语
+                    </button>
+                </div>
+            `;
+            
+            document.getElementById('ticketContainer').innerHTML = ticketHTML;
+            
+            // 滚动到预览区（移动端）
+            if(window.innerWidth < 1024) {
+                document.getElementById('ticketContainer').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        // 初始化样式按钮状态
+        setStyle('gentle');
+
+        // 回车生成
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('keypress', (e) => {
+                if(e.key === 'Enter') generateTicket();
+            });
+        });
+    </script>
+
+    <!-- 打印样式 -->
+    <style>
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .ticket-paper, .ticket-paper * {
+                visibility: visible;
+            }
+            .ticket-paper {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                box-shadow: none;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
 </body>
 </html>
