@@ -184,13 +184,13 @@
                                 class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-yellow-50 placeholder-white/30 transition-all">
                         </div>
                         
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="min-w-0">
                                 <label class="block text-purple-200 text-sm mb-2 font-medium">抵达日期</label>
                                 <input type="date" id="arrivalDate" 
                                     class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-yellow-50 placeholder-white/30 transition-all">
                             </div>
-                            <div>
+                            <div class="min-w-0">
                                 <label class="block text-purple-200 text-sm mb-2 font-medium">星座（可选）</label>
                                 <select id="catSign" class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-yellow-50 select-arrow transition-all">
                                     <option value="">选择星座</option>
@@ -274,7 +274,7 @@
                     <div id="ticketContainer" class="flex flex-col items-center">
                         <!-- 默认空状态 -->
                         <div class="text-center py-12 text-white/30">
-                            <div class="text-6xl mb-4">🐱</div>
+                            <img src="image.png" alt="预览" class="w-24 h-24 mx-auto mb-4 rounded-lg object-cover opacity-60" />
                             <p>请填写票根信息并点击生成</p>
                         </div>
                     </div>
@@ -486,28 +486,28 @@
             const size = 80;
             const cellSize = size / 25;
             const canvas = document.createElement('canvas');
-            canvas.width = size;
-            canvas.height = size;
+            canvas.width = size * 4;
+            canvas.height = size * 4;
             const ctx = canvas.getContext('2d');
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, size, size);
+            ctx.fillStyle = '#f5f5dc';
+            ctx.fillRect(0, 0, size * 4, size * 4);
             ctx.fillStyle = '#2d2d2d';
             for (let i = 0; i < 25; i++) {
                 for (let j = 0; j < 25; j++) {
                     if (Math.random() > 0.5) {
-                        ctx.fillRect(i * cellSize, j * cellSize, cellSize, cellSize);
+                        ctx.fillRect(i * cellSize * 4, j * cellSize * 4, cellSize * 4, cellSize * 4);
                     }
                 }
             }
             const pos = [[2,2,7], [16,2,7], [2,16,7]];
             pos.forEach(([x, y, s]) => {
                 ctx.strokeStyle = '#2d2d2d';
-                ctx.lineWidth = cellSize;
-                ctx.strokeRect(x * cellSize, y * cellSize, s * cellSize, s * cellSize);
+                ctx.lineWidth = cellSize * 4;
+                ctx.strokeRect(x * cellSize * 4, y * cellSize * 4, s * cellSize * 4, s * cellSize * 4);
                 ctx.fillStyle = '#2d2d2d';
-                ctx.fillRect((x + 1) * cellSize, (y + 1) * cellSize, (s - 2) * cellSize, (s - 2) * cellSize);
+                ctx.fillRect((x + 1) * cellSize * 4, (y + 1) * cellSize * 4, (s - 2) * cellSize * 4, (s - 2) * cellSize * 4);
                 ctx.strokeStyle = '#2d2d2d';
-                ctx.strokeRect((x + 2) * cellSize, (y + 2) * cellSize, (s - 4) * cellSize, (s - 4) * cellSize);
+                ctx.strokeRect((x + 2) * cellSize * 4, (y + 2) * cellSize * 4, (s - 4) * cellSize * 4, (s - 4) * cellSize * 4);
             });
             return canvas.toDataURL('image/png');
         }
@@ -519,14 +519,14 @@
                 qr.addData(text);
                 qr.make();
                 const modules = qr.getModuleCount();
-                const cellSize = 3;
+                const cellSize = 3 * 4;
                 const margin = 2;
                 const size = modules * cellSize + margin * 2 * cellSize;
                 const c = document.createElement('canvas');
                 c.width = size;
                 c.height = size;
                 const ctx = c.getContext('2d');
-                ctx.fillStyle = '#ffffff';
+                ctx.fillStyle = '#f5f5dc';
                 ctx.fillRect(0, 0, size, size);
                 ctx.fillStyle = '#2d2d2d';
                 for (let row = 0; row < modules; row++) {
@@ -756,28 +756,23 @@
                         const url = URL.createObjectURL(blob);
                         
                         if (isIOS) {
-                            const newPage = window.open('about:blank', '_blank');
-                            if (newPage) {
-                                newPage.document.write(`
-                                    <html>
-                                        <head>
-                                            <meta name="viewport" content="width=device-width,initial-scale=1" />
-                                            <title>长按保存图片</title>
-                                            <style>
-                                                body { margin: 0; background: #111; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; box-sizing: border-box; }
-                                                img { max-width: 100%; height: auto; border-radius: 8px; }
-                                                .tip { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); color: #fff; background: rgba(0,0,0,0.7); padding: 10px 20px; border-radius: 20px; font-size: 14px; }
-                                            </style>
-                                        </head>
-                                        <body>
-                                            <img src="${url}" alt="喵星抵达证明" />
-                                            <div class="tip">长按图片选择"存储图像"</div>
-                                        </body>
-                                    </html>
-                                `);
-                                newPage.document.close();
+                            let overlay = document.getElementById('iosSaveOverlay');
+                            if (!overlay) {
+                                overlay = document.createElement('div');
+                                overlay.id = 'iosSaveOverlay';
+                                overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.92);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;';
+                                overlay.innerHTML = `
+                                    <div style="position:absolute;top:16px;right:16px;cursor:pointer;color:#fff;font-size:28px;padding:8px;" onclick="document.getElementById('iosSaveOverlay').style.display='none'">✕</div>
+                                    <img id="iosSaveImg" style="max-width:100%;max-height:70vh;height:auto;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.5);" />
+                                    <div style="color:#fff;margin-top:20px;text-align:center;">
+                                        <p style="font-size:16px;margin:0 0 8px;">👆 长按上方图片</p>
+                                        <p style="font-size:14px;opacity:0.7;margin:0;">选择"存储图像"保存到相册</p>
+                                    </div>
+                                `;
+                                document.body.appendChild(overlay);
                             }
-                            alert('请在新页面长按图片并选择"存储图像"保存到相册');
+                            overlay.querySelector('#iosSaveImg').src = url;
+                            overlay.style.display = 'flex';
                         } else {
                             const a = document.createElement('a');
                             a.href = url;
