@@ -170,7 +170,7 @@
 
         <div class="grid lg:grid-cols-2 gap-12 items-start">
             
-            <!-- 左侧：配置面板 -->
+            <!-- 配置面板 -->
             <div class="space-y-6">
                 <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-white/10 shadow-2xl">
                     <h2 class="text-xl font-bold text-yellow-100 mb-6 flex items-center gap-2">
@@ -255,9 +255,9 @@
                     </h3>
                     <ul class="space-y-1.5 list-disc list-inside">
                         <li>填写喵星人的名字和抵达喵星的日期</li>
-                        <li>可输入主人称呼，寄语中的 {{owner}} 会自动替换</li>
+                        <li>可输入主人称呼，寄语中的名字会自动替换</li>
                         <li>支持上传主人头像，生成卡片会带上头像</li>
-                        <li>选择寄语风格或输入你想对主人说的话</li>
+                        <li>选择寄语风格或输入宠物想对主人说的话</li>
                         <li>点击"生成纪念票根"预览效果</li>
                         <li>点击“下载图片”直接导出 PNG（手机端也可保存）</li>
                     </ul>
@@ -275,7 +275,7 @@
                         <!-- 默认空状态 -->
                         <div class="text-center py-12 text-white/30">
                             <div class="text-6xl mb-4">🐱</div>
-                            <p>请填写左侧信息并点击生成</p>
+                            <p>请填写票根信息并点击生成</p>
                         </div>
                     </div>
                 </div>
@@ -655,7 +655,6 @@
                 document.getElementById('ticketContainer').scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         }
-
         async function downloadTicketImage() {
             try {
                 const ticketElement = document.getElementById('ticketCard');
@@ -664,31 +663,75 @@
                     return;
                 }
 
-                const scale = Math.max(2, Math.min(3, window.devicePixelRatio || 1));
-                const canvas = await html2canvas(ticketElement, {
-                    scale,
-                    useCORS: true,
-                    backgroundColor: null
-                });
-
                 const catName = document.getElementById('catName').value || '喵星人';
                 const safeName = catName.replace(/[\\/:*?"<>|]/g, '_');
                 const fileName = `${safeName}-喵星抵达证明.png`;
-
                 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-                if (isIOS) {
-                    const dataUrl = canvas.toDataURL('image/png');
-                    const newPage = window.open('about:blank', '_blank');
-                    if (newPage) {
-                        newPage.document.write(`
-                            <html><head><meta name="viewport" content="width=device-width,initial-scale=1" /><title>长按保存图片</title></head>
-                            <body style="margin:0;background:#111;display:flex;align-items:center;justify-content:center;min-height:100vh;">
-                                <img src="${dataUrl}" alt="喵星抵达证明" style="width:100%;height:auto;max-width:720px;" />
-                            </body></html>
-                        `);
-                        newPage.document.close();
+                const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+                const scale = Math.max(2, Math.min(3, window.devicePixelRatio || 1));
+                
+                const canvas = await html2canvas(ticketElement, {
+                    scale,
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: '#f5f5dc',
+                    foreignObjectRendering: false,
+                    onclone: (clonedDoc) => {
+                        const clonedTicket = clonedDoc.getElementById('ticketCard');
+                        if (clonedTicket) {
+                            clonedTicket.style.maskImage = 'none';
+                            clonedTicket.style.webkitMaskImage = 'none';
+                        }
                     }
-                    alert('iPhone/iPad 请长按图片并选择“存储到照片”。');
+                });
+
+                if (isIOS || isSafari) {
+                    try {
+                        const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+                        if (!blob) {
+                            alert('图片生成失败，请重试。');
+                            return;
+                        }
+                        
+                        const url = URL.createObjectURL(blob);
+                        
+                        if (isIOS) {
+                            const newPage = window.open('about:blank', '_blank');
+                            if (newPage) {
+                                newPage.document.write(`
+                                    <html>
+                                        <head>
+                                            <meta name="viewport" content="width=device-width,initial-scale=1" />
+                                            <title>长按保存图片</title>
+                                            <style>
+                                                body { margin: 0; background: #111; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; box-sizing: border-box; }
+                                                img { max-width: 100%; height: auto; border-radius: 8px; }
+                                                .tip { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); color: #fff; background: rgba(0,0,0,0.7); padding: 10px 20px; border-radius: 20px; font-size: 14px; }
+                                            </style>
+                                        </head>
+                                        <body>
+                                            <img src="${url}" alt="喵星抵达证明" />
+                                            <div class="tip">长按图片选择"存储图像"</div>
+                                        </body>
+                                    </html>
+                                `);
+                                newPage.document.close();
+                            }
+                            alert('请在新页面长按图片并选择"存储图像"保存到相册');
+                        } else {
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = fileName;
+                            document.body.appendChild(a);
+                            a.click();
+                            a.remove();
+                            setTimeout(() => URL.revokeObjectURL(url), 1000);
+                        }
+                    } catch (iosError) {
+                        console.error('iOS download error:', iosError);
+                        alert('iOS 下载需要您截图保存。请同时按住电源键和音量键截图。');
+                    }
                     return;
                 }
 
@@ -708,8 +751,8 @@
                     URL.revokeObjectURL(url);
                 }, 'image/png');
             } catch (error) {
-                alert('导出失败，请稍后重试。');
-                console.error(error);
+                console.error('Download error:', error);
+                alert('导出失败: ' + (error.message || '请稍后重试'));
             }
         }
 
