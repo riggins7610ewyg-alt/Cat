@@ -483,28 +483,33 @@
         }
 
         function generateDecorativeQR() {
-            // 生成一个随机的"二维码"SVG图案
             const size = 80;
-            let rects = '';
             const cellSize = size / 25;
-            for(let i=0; i<25; i++) {
-                for(let j=0; j<25; j++) {
-                    if(Math.random() > 0.5) {
-                        rects += `<rect x="${i*cellSize}" y="${j*cellSize}" width="${cellSize}" height="${cellSize}" fill="#2d2d2d"/>`;
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, size, size);
+            ctx.fillStyle = '#2d2d2d';
+            for (let i = 0; i < 25; i++) {
+                for (let j = 0; j < 25; j++) {
+                    if (Math.random() > 0.5) {
+                        ctx.fillRect(i * cellSize, j * cellSize, cellSize, cellSize);
                     }
                 }
             }
-            const pos = [
-                [2,2,7], [16,2,7], [2,16,7]
-            ];
-            pos.forEach(([x,y,s]) => {
-                rects += `<rect x="${x*cellSize}" y="${y*cellSize}" width="${s*cellSize}" height="${s*cellSize}" fill="none" stroke="#2d2d2d" stroke-width="${cellSize}"/>`;
-                rects += `<rect x="${(x+1)*cellSize}" y="${(y+1)*cellSize}" width="${(s-2)*cellSize}" height="${(s-2)*cellSize}" fill="#2d2d2d"/>`;
-                rects += `<rect x="${(x+2)*cellSize}" y="${(y+2)*cellSize}" width="${(s-4)*cellSize}" height="${(s-4)*cellSize}" fill="none" stroke="#2d2d2d" stroke-width="${cellSize}"/>`;
+            const pos = [[2,2,7], [16,2,7], [2,16,7]];
+            pos.forEach(([x, y, s]) => {
+                ctx.strokeStyle = '#2d2d2d';
+                ctx.lineWidth = cellSize;
+                ctx.strokeRect(x * cellSize, y * cellSize, s * cellSize, s * cellSize);
+                ctx.fillStyle = '#2d2d2d';
+                ctx.fillRect((x + 1) * cellSize, (y + 1) * cellSize, (s - 2) * cellSize, (s - 2) * cellSize);
+                ctx.strokeStyle = '#2d2d2d';
+                ctx.strokeRect((x + 2) * cellSize, (y + 2) * cellSize, (s - 4) * cellSize, (s - 4) * cellSize);
             });
-
-            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">${rects}</svg>`;
-            return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+            return canvas.toDataURL('image/png');
         }
 
         function generateScannableQR(text) {
@@ -513,7 +518,29 @@
                 const qr = qrcode(0, 'M');
                 qr.addData(text);
                 qr.make();
-                return qr.createDataURL(3, 2);
+                const modules = qr.getModuleCount();
+                const cellSize = 3;
+                const margin = 2;
+                const size = modules * cellSize + margin * 2 * cellSize;
+                const c = document.createElement('canvas');
+                c.width = size;
+                c.height = size;
+                const ctx = c.getContext('2d');
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, size, size);
+                ctx.fillStyle = '#2d2d2d';
+                for (let row = 0; row < modules; row++) {
+                    for (let col = 0; col < modules; col++) {
+                        if (qr.isDark(row, col)) {
+                            ctx.fillRect(
+                                col * cellSize + margin * cellSize,
+                                row * cellSize + margin * cellSize,
+                                cellSize, cellSize
+                            );
+                        }
+                    }
+                }
+                return c.toDataURL('image/png');
             } catch (err) {
                 console.warn('可扫码二维码生成失败，已回退装饰二维码。', err);
                 return '';
@@ -674,14 +701,46 @@
                 const canvas = await html2canvas(ticketElement, {
                     scale,
                     useCORS: true,
-                    allowTaint: true,
                     backgroundColor: '#f5f5dc',
-                    foreignObjectRendering: false,
-                    onclone: (clonedDoc) => {
+                    onclone: async (clonedDoc) => {
                         const clonedTicket = clonedDoc.getElementById('ticketCard');
                         if (clonedTicket) {
                             clonedTicket.style.maskImage = 'none';
                             clonedTicket.style.webkitMaskImage = 'none';
+                            clonedTicket.style.backgroundImage = 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%)';
+                        }
+                        const allElements = clonedTicket ? clonedTicket.querySelectorAll('*') : [];
+                        allElements.forEach(el => {
+                            const computed = clonedDoc.defaultView.getComputedStyle(el);
+                            if (computed.maskImage && computed.maskImage.includes('svg')) {
+                                el.style.maskImage = 'none';
+                            }
+                            if (computed.webkitMaskImage && computed.webkitMaskImage.includes('svg')) {
+                                el.style.webkitMaskImage = 'none';
+                            }
+                            if (computed.backgroundImage && computed.backgroundImage.includes('data:image/svg')) {
+                                el.style.backgroundImage = 'none';
+                            }
+                        });
+                        const svgImgs = clonedTicket ? clonedTicket.querySelectorAll('img[src^="data:image/svg"]') : [];
+                        for (const img of svgImgs) {
+                            try {
+                                const imgEl = new Image();
+                                imgEl.crossOrigin = 'anonymous';
+                                await new Promise((resolve, reject) => {
+                                    imgEl.onload = resolve;
+                                    imgEl.onerror = reject;
+                                    imgEl.src = img.getAttribute('src');
+                                });
+                                const c = clonedDoc.createElement('canvas');
+                                c.width = imgEl.naturalWidth || 80;
+                                c.height = imgEl.naturalHeight || 80;
+                                const ctx = c.getContext('2d');
+                                ctx.drawImage(imgEl, 0, 0);
+                                img.setAttribute('src', c.toDataURL('image/png'));
+                            } catch(e) {
+                                img.setAttribute('src', '');
+                            }
                         }
                     }
                 });
