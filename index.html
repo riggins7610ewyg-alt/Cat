@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>喵星抵达证明 - 纪念票根打印机</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=ZCOOL+XiaoWei&display=swap');
@@ -229,6 +231,16 @@
                                 class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-yellow-50 placeholder-white/30 transition-all">
                         </div>
 
+                        <div>
+                            <label class="block text-purple-200 text-sm mb-2 font-medium">主人头像（可选）</label>
+                            <input type="file" id="ownerAvatar" accept="image/*"
+                                class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2.5 text-yellow-50 text-sm transition-all file:mr-3 file:rounded-md file:border-0 file:bg-yellow-600/80 file:px-3 file:py-1.5 file:text-white hover:file:bg-yellow-500/90">
+                            <div class="mt-2 flex items-center gap-3">
+                                <div id="ownerAvatarPreview" class="w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-sm text-white/50">👤</div>
+                                <button type="button" onclick="clearOwnerAvatar()" class="text-xs text-yellow-100/80 hover:text-yellow-100 underline underline-offset-2">清除头像</button>
+                            </div>
+                        </div>
+
                         <button onclick="generateTicket()" 
                             class="print-btn w-full bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-500 hover:to-yellow-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-yellow-900/30 transition-all flex items-center justify-center gap-2 text-lg">
                             <span>🖨️</span> 生成纪念票根
@@ -243,9 +255,11 @@
                     </h3>
                     <ul class="space-y-1.5 list-disc list-inside">
                         <li>填写喵星人的名字和抵达喵星的日期</li>
+                        <li>可输入主人称呼，寄语中的 {{owner}} 会自动替换</li>
+                        <li>支持上传主人头像，生成卡片会带上头像</li>
                         <li>选择寄语风格或输入你想对主人说的话</li>
                         <li>点击"生成纪念票根"预览效果</li>
-                        <li>在预览区右键保存图片，或使用浏览器打印功能（Ctrl+P）打印实体票根</li>
+                        <li>点击“下载图片”直接导出 PNG（手机端也可保存）</li>
                     </ul>
                 </div>
             </div>
@@ -257,7 +271,7 @@
                         <span class="text-2xl">🎟️</span> 预览区域
                     </h2>
                     
-                    <div id="ticketContainer" class="flex justify-center">
+                    <div id="ticketContainer" class="flex flex-col items-center">
                         <!-- 默认空状态 -->
                         <div class="text-center py-12 text-white/30">
                             <div class="text-6xl mb-4">🐱</div>
@@ -271,26 +285,150 @@
 
     <script>
         // 寄语库
+        const OWNER_TOKEN = '{{owner}}';
+        const QUOTES_FILE_PATH = './quotes.txt';
+        // 在这里填入非空文本后，二维码会变成可扫码并返回该文本。
+        const SCANNABLE_QR_TEXT = '';
+        let ownerAvatarDataUrl = '';
+        let quotesLoaded = false;
+        let quotesLoadPromise = null;
+
         const messages = {
             gentle: [
-                "主人，我在喵星一切都好。这里的阳光永远温暖，罐头永远管够。你不要总是哭鼻子哦，我会一直趴在云朵上看着你。记得按时吃饭，好好睡觉，这样我才能放心地做我的小天使。",
-                "亲爱的铲屎官，喵星的门铃是我按响的。这里有很多新朋友，但我最想念的还是你膝盖的温度。不要太快忘记我，但也不要让悲伤停留太久。你要替我多吃几个罐头，看更多的日落。",
-                "我到了，这里比想象中还要漂亮。有永远追不完的激光点，和永远不会打翻的猫爬架。主人，我把九条命都换成了守护你的星星。晚上抬头看看天空，最亮的那颗就是我。",
-                "不要为我难过太久哦。我只是提前去喵星占了个好位置，等你很久很久以后来的时候，我就来接你。在那之前，要替我好好爱这个世界，爱新的猫咪，也爱你自己。"
+                "{{owner}}，我在喵星一切都好。这里的阳光永远温暖，罐头永远管够。你不要总是哭鼻子哦，我会一直趴在云朵上看着你。记得按时吃饭，好好睡觉，这样我才能放心地做我的小天使。",
+                "亲爱的{{owner}}，喵星的门铃是我按响的。这里有很多新朋友，但我最想念的还是你膝盖的温度。不要太快忘记我，但也不要让悲伤停留太久。你要替我多吃几个罐头，看更多的日落。",
+                "我到了，这里比想象中还要漂亮。有永远追不完的激光点，和永远不会打翻的猫爬架。{{owner}}，我把九条命都换成了守护你的星星。晚上抬头看看天空，最亮的那颗就是我。",
+                "不要为我难过太久哦。我只是提前去喵星占了个好位置，等你很久很久以后来的时候，我就来接你。在那之前，要替我好好爱这个世界，爱新的猫咪，也爱你自己。",
+                "{{owner}}，谢谢你给我一个温暖的家。我现在每天在喵星晒太阳、追流星。请不要再自责，你给了我最好的一生。接下来，请好好爱自己，我也会在梦里蹭蹭你。",
+                "{{owner}}，你摸过我耳后的每一次轻轻揉捏，我都记得。现在轮到我在星光里守着你。你要把日子过得软软暖暖，就像你曾经抱着我那样。",
+                "亲爱的{{owner}}，如果想我了，就把手心贴在胸口。那一阵忽然安静下来的心跳，就是我在说：别怕，我还在。",
+                "{{owner}}，我把你的名字藏进了喵星的晚风里。每当你走过夜路，风轻轻碰你一下，那是我在蹭你的裤脚。",
+                "谢谢{{owner}}教会我被爱是什么样子。以后你也要像爱我一样爱自己，按时睡觉、认真吃饭、偶尔去晒太阳。"
             ],
             cheerful: [
-                "报告铲屎官！本喵已成功登陆喵星！这里的WiFi信号满格，小鱼干无限量供应！你在地球要好好搬砖，给我买不了罐头了但你要给自己买好吃的！不许偷懒不铲...啊不对，你现在不用铲了！开心点！",
-                "嗨！是我！我已经在喵星混成老大了！这里的猫都得听我的，因为我有最棒的主人教我的本领。你要继续威风哦，别被别的猫（或者人）欺负了！我会从星星上给你发射好运光线的！biu~",
-                "主人主人！喵星的云是棉花糖味的！我每天都在这里跑酷，没有沙发可以抓，但有彩虹可以爬！你不要太想我，想我的时候就吃顿好的，就当是替我吃的！爱你喵！",
-                "叮咚~你的小可爱已抵达目的地！五星好评！喵星服务很好，就是有点想你。不过没关系，我派了一只蝴蝶、一片落叶、一阵微风当你的新保镖，它们都是我哦！"
+                "报告{{owner}}！本喵已成功登陆喵星！这里的WiFi信号满格，小鱼干无限量供应！你在地球要好好搬砖，给我买不了罐头了但你要给自己买好吃的！不许偷懒不铲...啊不对，你现在不用铲了！开心点！",
+                "嗨！是我！我已经在喵星混成老大了！这里的猫都得听我的，因为我有最棒的{{owner}}教我的本领。你要继续威风哦，别被别的猫（或者人）欺负了！我会从星星上给你发射好运光线的！biu~",
+                "{{owner}}！喵星的云是棉花糖味的！我每天都在这里跑酷，没有沙发可以抓，但有彩虹可以爬！你不要太想我，想我的时候就吃顿好的，就当是替我吃的！爱你喵！",
+                "叮咚~你的小可爱已抵达目的地！五星好评！喵星服务很好，就是有点想你。不过没关系，我派了一只蝴蝶、一片落叶、一阵微风当你的新保镖，它们都是我哦！",
+                "喵星政府认证：{{owner}}是满分主人！这里有小鱼干云、彩虹滑梯，不用担心我。你也要按时下班，和朋友欢笑，好好照顾自己，不然我会喵喵叫提醒你的。",
+                "{{owner}}快看！我在喵星学会了后空翻和太空漂移，已经是猫咪特技队队长啦。你也要像我一样，跌倒了就抖抖毛继续往前走！",
+                "好消息播报：{{owner}}今日份幸运值已被我偷偷拉满。出门不堵车，点外卖不踩雷，晚上还能做个甜甜的梦，喵呜认证！",
+                "{{owner}}，我把你给我的勇气装进了小铃铛。现在每次铃铛一响，就会有一颗小好运落在你肩膀上。"
             ],
             poetic: [
-                "我穿越了那道彩虹桥，抵达了没有离别的地方。这里的月光是银色的毛线，银河是流淌的猫薄荷。主人，生命是不断的相遇与告别，而我只是提前去了下一个转角。当你感到一阵莫名的温暖，那就是我。",
+                "我穿越了那道彩虹桥，抵达了没有离别的地方。这里的月光是银色的毛线，银河是流淌的猫薄荷。{{owner}}，生命是不断的相遇与告别，而我只是提前去了下一个转角。当你感到一阵莫名的温暖，那就是我。",
                 "从这一刻起，我成为了永恒的一部分。化作春泥，化作晨露，化作你窗台上那一缕不肯离去的夕阳。不要寻找我，我无处不在。在每一声喵呜的回响里，在每一个温柔的梦境边缘。",
                 "死亡不是终点，遗忘才是。所以请你记得我，但不必沉溺于悲伤。我是你爱过的一只猫，这本身就是宇宙间最了不起的奇迹。现在，让我成为守护你的星尘，直到时间的尽头。",
-                "我卸下了沉重的肉身，化作轻盈的光。喵星没有钟表，所以我不会老去；没有围墙，所以我自由奔跑。而你在地球上的每一次微笑，都会变成我这里的星光。请多微笑，为了我。"
+                "我卸下了沉重的肉身，化作轻盈的光。喵星没有钟表，所以我不会老去；没有围墙，所以我自由奔跑。而你在地球上的每一次微笑，都会变成我这里的星光。请多微笑，为了我。",
+                "我已经把痛苦留在了地球，现在轻盈得像一朵云。谢谢{{owner}}陪我走过那段时光，如今请把温柔留给自己。当你想我时，抬头看看夜空，最亮的那颗是我在眨眼。",
+                "{{owner}}，我们在同一片夜色下，只是站在不同的岸。你看见月亮时，我也看见你；你轻声唤我时，风会替我回答。",
+                "我把爪印留在了时间的缝隙里。往后漫长岁月中，凡是让你忽然鼻尖一酸又心里一暖的瞬间，都是我在与你重逢。",
+                "亲爱的{{owner}}，你给予我的爱并未结束，它只是换了一种形状：落在清晨窗帘边，落在晚归路灯下，落在你仍愿意温柔生活的每一天。"
             ]
         };
+
+        function normalizeOwnerAlias(text) {
+            let normalized = text.trim();
+            if (!normalized) return '';
+            normalized = normalized.replace(/[“”]/g, '').replace(/^["']|["',，。]$/g, '');
+            normalized = normalized
+                .replaceAll('铲屎官', OWNER_TOKEN)
+                .replaceAll('主人主人', `${OWNER_TOKEN}，`)
+                .replaceAll('主人', OWNER_TOKEN)
+                .replaceAll('亲爱的，', `亲爱的${OWNER_TOKEN}，`)
+                .replaceAll('亲爱的,', `亲爱的${OWNER_TOKEN},`);
+            return normalized;
+        }
+
+        function classifyMessageStyle(text) {
+            if (/报告|叮咚|biu|政府认证|跑酷|好消息/.test(text)) return 'cheerful';
+            if (/死亡|永恒|宇宙|星尘|彩虹桥|月光|灵魂|晨露|夕阳|时间/.test(text)) return 'poetic';
+            return 'gentle';
+        }
+
+        function mergeMessages(style, items) {
+            const pool = messages[style];
+            const exists = new Set(pool);
+            items.forEach((item) => {
+                if (item && !exists.has(item)) {
+                    pool.push(item);
+                    exists.add(item);
+                }
+            });
+        }
+
+        function parseQuotesFile(content) {
+            const grouped = { gentle: [], cheerful: [], poetic: [] };
+            let currentStyle = '';
+
+            content
+                .split(/\r?\n/)
+                .map((line) => line.trim())
+                .forEach((line) => {
+                    if (!line || line.startsWith('//')) return;
+
+                    const header = line.toLowerCase();
+                    if (header === '# gentle' || header === '[gentle]') {
+                        currentStyle = 'gentle';
+                        return;
+                    }
+                    if (header === '# cheerful' || header === '[cheerful]') {
+                        currentStyle = 'cheerful';
+                        return;
+                    }
+                    if (header === '# poetic' || header === '[poetic]') {
+                        currentStyle = 'poetic';
+                        return;
+                    }
+
+                    let normalized = normalizeOwnerAlias(line);
+                    normalized = normalized.replace(/^"|"[,]?$/g, '');
+                    if (!normalized || normalized.length < 5) return;
+
+                    const style = currentStyle || classifyMessageStyle(normalized);
+                    grouped[style].push(normalized);
+                });
+
+            return grouped;
+        }
+
+        async function loadMessagesFromTxt() {
+            if (quotesLoaded) return true;
+            if (quotesLoadPromise) return quotesLoadPromise;
+
+            quotesLoadPromise = (async () => {
+            try {
+                const resp = await fetch(QUOTES_FILE_PATH, { cache: 'no-cache' });
+                if (!resp.ok) return false;
+                const content = await resp.text();
+                const grouped = parseQuotesFile(content);
+
+                const hasAnyExternal = grouped.gentle.length || grouped.cheerful.length || grouped.poetic.length;
+                if (!hasAnyExternal) return false;
+
+                messages.gentle = [];
+                messages.cheerful = [];
+                messages.poetic = [];
+
+                mergeMessages('gentle', grouped.gentle);
+                mergeMessages('cheerful', grouped.cheerful);
+                mergeMessages('poetic', grouped.poetic);
+                quotesLoaded = true;
+                return true;
+            } catch (err) {
+                console.warn('语录加载失败，已使用内置寄语。', err);
+                return false;
+            }
+            })();
+
+            const loaded = await quotesLoadPromise;
+            quotesLoadPromise = null;
+            return loaded;
+        }
+
+        function applyOwnerToken(text, ownerName) {
+            return text.replaceAll(OWNER_TOKEN, ownerName);
+        }
 
         let currentStyle = 'gentle';
 
@@ -317,7 +455,34 @@
             return id;
         }
 
-        function generateQR() {
+        function escapeHtml(text) {
+            return text
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;')
+                .replaceAll("'", '&#39;');
+        }
+
+        function renderOwnerAvatarPreview() {
+            const preview = document.getElementById('ownerAvatarPreview');
+            if (!preview) return;
+
+            if (ownerAvatarDataUrl) {
+                preview.innerHTML = `<img src="${ownerAvatarDataUrl}" alt="头像预览" class="w-full h-full rounded-full object-cover">`;
+            } else {
+                preview.innerHTML = '👤';
+            }
+        }
+
+        function clearOwnerAvatar() {
+            ownerAvatarDataUrl = '';
+            const input = document.getElementById('ownerAvatar');
+            if (input) input.value = '';
+            renderOwnerAvatarPreview();
+        }
+
+        function generateDecorativeQR() {
             // 生成一个随机的"二维码"SVG图案
             const size = 80;
             let rects = '';
@@ -329,7 +494,6 @@
                     }
                 }
             }
-            // 添加定位点
             const pos = [
                 [2,2,7], [16,2,7], [2,16,7]
             ];
@@ -338,11 +502,27 @@
                 rects += `<rect x="${(x+1)*cellSize}" y="${(y+1)*cellSize}" width="${(s-2)*cellSize}" height="${(s-2)*cellSize}" fill="#2d2d2d"/>`;
                 rects += `<rect x="${(x+2)*cellSize}" y="${(y+2)*cellSize}" width="${(s-4)*cellSize}" height="${(s-4)*cellSize}" fill="none" stroke="#2d2d2d" stroke-width="${cellSize}"/>`;
             });
-            
-            return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='${size}' height='${size}'%3E${rects}%3C/svg%3E`;
+
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">${rects}</svg>`;
+            return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
         }
 
-        function generateTicket() {
+        function generateScannableQR(text) {
+            if (!text || !window.qrcode) return '';
+            try {
+                const qr = qrcode(0, 'M');
+                qr.addData(text);
+                qr.make();
+                return qr.createDataURL(3, 2);
+            } catch (err) {
+                console.warn('可扫码二维码生成失败，已回退装饰二维码。', err);
+                return '';
+            }
+        }
+
+        async function generateTicket() {
+            await loadMessagesFromTxt();
+
             const catName = document.getElementById('catName').value || '未知喵星人';
             const arrivalDate = document.getElementById('arrivalDate').value || new Date().toISOString().split('T')[0];
             const catSign = document.getElementById('catSign').value;
@@ -355,20 +535,24 @@
             // 选择寄语
             let finalMessage;
             if(customMsg.trim()) {
-                finalMessage = customMsg;
+                finalMessage = applyOwnerToken(customMsg, ownerName);
             } else {
                 const pool = messages[currentStyle];
-                finalMessage = pool[Math.floor(Math.random() * pool.length)];
+                finalMessage = applyOwnerToken(pool[Math.floor(Math.random() * pool.length)], ownerName);
             }
             
             const ticketId = generateTicketId();
-            const qrData = generateQR();
+            const qrData = generateScannableQR(SCANNABLE_QR_TEXT.trim()) || generateDecorativeQR();
+            const ownerAvatarHtml = ownerAvatarDataUrl
+                ? `<img src="${ownerAvatarDataUrl}" alt="主人头像" class="w-10 h-10 rounded-full object-cover border border-yellow-800/30">`
+                : '<div class="w-10 h-10 rounded-full bg-yellow-800/20 flex items-center justify-center text-xl">👤</div>';
             
             // 星座显示
             const signHtml = catSign ? `<span class="mx-2 text-yellow-700/40">|</span><span class="text-yellow-800">${catSign}</span>` : '';
             
             const ticketHTML = `
-                <div class="ticket-paper w-full max-w-md mx-auto rounded-lg shadow-2xl overflow-hidden relative tear-edge" style="min-height: 600px;">
+                <div class="w-full flex flex-col items-center">
+                <div id="ticketCard" class="ticket-paper w-full max-w-md mx-auto rounded-lg shadow-2xl overflow-hidden relative tear-edge" style="min-height: 600px;">
                     <!-- 顶部装饰 -->
                     <div class="h-2 bg-gradient-to-r from-yellow-700 via-yellow-600 to-yellow-700"></div>
                     
@@ -424,7 +608,7 @@
                         
                         <!-- 主人信息 -->
                         <div class="flex items-center gap-3 mb-6 bg-yellow-900/5 rounded-lg p-3 border border-yellow-900/10">
-                            <div class="w-10 h-10 rounded-full bg-yellow-800/20 flex items-center justify-center text-xl">👤</div>
+                            ${ownerAvatarHtml}
                             <div>
                                 <div class="text-xs text-yellow-700/60">Recipient (Owner)</div>
                                 <div class="text-sm font-bold text-yellow-900">${ownerName} 收</div>
@@ -439,7 +623,7 @@
                                 <div class="text-[10px] text-yellow-700/40 mt-2">ISSUED BY MEOW STAR ALLIANCE</div>
                             </div>
                             <div class="w-20 h-20 opacity-80">
-                                <img src="${qrData}" alt="QR" class="w-full h-full">
+                                <img src="${qrData}" alt="QR" class="w-full h-full" />
                             </div>
                         </div>
                         
@@ -453,13 +637,14 @@
                 </div>
                 
                 <!-- 操作按钮 -->
-                <div class="mt-6 flex gap-3 justify-center">
-                    <button onclick="window.print()" class="bg-white/10 hover:bg-white/20 text-yellow-100 px-6 py-2 rounded-lg border border-white/20 transition-all flex items-center gap-2 text-sm">
-                        <span>🖨️</span> 打印 / 保存PDF
+                <div class="mt-6 flex gap-3 justify-center flex-wrap">
+                    <button onclick="downloadTicketImage()" class="bg-white/10 hover:bg-white/20 text-yellow-100 px-6 py-2 rounded-lg border border-white/20 transition-all flex items-center gap-2 text-sm">
+                        <span>🖼️</span> 下载图片
                     </button>
                     <button onclick="generateTicket()" class="bg-white/10 hover:bg-white/20 text-yellow-100 px-6 py-2 rounded-lg border border-white/20 transition-all flex items-center gap-2 text-sm">
                         <span>🔄</span> 换一句寄语
                     </button>
+                </div>
                 </div>
             `;
             
@@ -471,39 +656,96 @@
             }
         }
 
+        async function downloadTicketImage() {
+            try {
+                const ticketElement = document.getElementById('ticketCard');
+                if (!ticketElement) {
+                    alert('请先生成纪念票根');
+                    return;
+                }
+
+                const scale = Math.max(2, Math.min(3, window.devicePixelRatio || 1));
+                const canvas = await html2canvas(ticketElement, {
+                    scale,
+                    useCORS: true,
+                    backgroundColor: null
+                });
+
+                const catName = document.getElementById('catName').value || '喵星人';
+                const safeName = catName.replace(/[\\/:*?"<>|]/g, '_');
+                const fileName = `${safeName}-喵星抵达证明.png`;
+
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+                if (isIOS) {
+                    const dataUrl = canvas.toDataURL('image/png');
+                    const newPage = window.open('about:blank', '_blank');
+                    if (newPage) {
+                        newPage.document.write(`
+                            <html><head><meta name="viewport" content="width=device-width,initial-scale=1" /><title>长按保存图片</title></head>
+                            <body style="margin:0;background:#111;display:flex;align-items:center;justify-content:center;min-height:100vh;">
+                                <img src="${dataUrl}" alt="喵星抵达证明" style="width:100%;height:auto;max-width:720px;" />
+                            </body></html>
+                        `);
+                        newPage.document.close();
+                    }
+                    alert('iPhone/iPad 请长按图片并选择“存储到照片”。');
+                    return;
+                }
+
+                canvas.toBlob((blob) => {
+                    if (!blob) {
+                        alert('图片生成失败，请重试。');
+                        return;
+                    }
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = fileName;
+                    a.target = '_self';
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    URL.revokeObjectURL(url);
+                }, 'image/png');
+            } catch (error) {
+                alert('导出失败，请稍后重试。');
+                console.error(error);
+            }
+        }
+
         // 初始化样式按钮状态
         setStyle('gentle');
+        renderOwnerAvatarPreview();
+
+        document.getElementById('ownerAvatar').addEventListener('change', (e) => {
+            const file = e.target.files && e.target.files[0];
+            if (!file) {
+                ownerAvatarDataUrl = '';
+                renderOwnerAvatarPreview();
+                return;
+            }
+            if (!file.type.startsWith('image/')) {
+                alert('请选择图片文件。');
+                e.target.value = '';
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = () => {
+                ownerAvatarDataUrl = String(reader.result || '');
+                renderOwnerAvatarPreview();
+            };
+            reader.readAsDataURL(file);
+        });
 
         // 回车生成
         document.querySelectorAll('input').forEach(input => {
             input.addEventListener('keypress', (e) => {
-                if(e.key === 'Enter') generateTicket();
+                if(e.key === 'Enter') {
+                    generateTicket();
+                }
             });
         });
     </script>
 
-    <!-- 打印样式 -->
-    <style>
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-            .ticket-paper, .ticket-paper * {
-                visibility: visible;
-            }
-            .ticket-paper {
-                position: absolute;
-                left: 50%;
-                top: 50%;
-                transform: translate(-50%, -50%);
-                box-shadow: none;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-            .no-print {
-                display: none !important;
-            }
-        }
-    </style>
 </body>
 </html>
