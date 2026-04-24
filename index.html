@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>喵星抵达证明 - 纪念票根打印机</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
     <style>
@@ -47,8 +46,6 @@
             color: #c41e3a;
             font-weight: 900;
             letter-spacing: 4px;
-            mask-image: url("data:image/svg+xml,%3Csvg width='200' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.4'/%3E%3C/svg%3E");
-            -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='200' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.4'/%3E%3C/svg%3E");
         }
         
         .cat-silhouette {
@@ -91,10 +88,9 @@
         }
         
         .ticket-paper {
-            background: #f5f5dc;
+            background-color: #f5f5dc;
             background-image: 
-                linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%),
-                url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%239C92AC' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+                linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
         }
         
         .handwritten {
@@ -114,14 +110,9 @@
         }
         
         .tear-edge {
-            clip-path: polygon(
-                0% 0%, 5% 1%, 10% 0%, 15% 1%, 20% 0%, 25% 1%, 30% 0%, 35% 1%, 
-                40% 0%, 45% 1%, 50% 0%, 55% 1%, 60% 0%, 65% 1%, 70% 0%, 75% 1%, 
-                80% 0%, 85% 1%, 90% 0%, 95% 1%, 100% 0%, 100% 100%, 95% 99%, 
-                90% 100%, 85% 99%, 80% 100%, 75% 99%, 70% 100%, 65% 99%, 
-                60% 100%, 55% 99%, 50% 100%, 45% 99%, 40% 100%, 35% 99%, 
-                30% 100%, 25% 99%, 20% 100%, 15% 99%, 10% 100%, 5% 99%, 0% 100%
-            );
+            border-top: 3px dashed #d4c4a8;
+            border-bottom: 3px dashed #d4c4a8;
+            border-radius: 12px;
         }
         
         input:focus, textarea:focus {
@@ -188,7 +179,7 @@
                             <div class="min-w-0">
                                 <label class="block text-purple-200 text-sm mb-2 font-medium">抵达日期</label>
                                 <input type="date" id="arrivalDate" 
-                                    class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-yellow-50 placeholder-white/30 transition-all" style="min-width:0;">
+                                    class="w-full min-w-0 appearance-none bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-yellow-50 transition-all">
                             </div>
                             <div class="min-w-0">
                                 <label class="block text-purple-200 text-sm mb-2 font-medium">星座（可选）</label>
@@ -258,8 +249,8 @@
                         <li>可输入主人称呼，寄语中的名字会自动替换</li>
                         <li>支持上传主人头像，生成卡片会带上头像</li>
                         <li>选择寄语风格或输入宠物想对主人说的话</li>
-                        <li>点击"生成纪念票根"预览效果</li>
-                        <li>点击“下载图片”直接导出 PNG（手机端也可保存）</li>
+                        <li>点击「生成纪念票根」预览效果</li>
+                        <li>点击「下载图片」→ 扫码关注弹窗 → 长按保存图片</li>
                     </ul>
                 </div>
             </div>
@@ -288,7 +279,23 @@
         const OWNER_TOKEN = '{{owner}}';
         const QUOTES_FILE_PATH = './quotes.txt';
         // 在这里填入非空文本后，二维码会变成可扫码并返回该文本。
-        const SCANNABLE_QR_TEXT = 'https://www.xiaohongshu.com/user/profile/690ed3bc000000003702fca5';
+        const SCANNABLE_QR_TEXT = 'https://cat.521469.xyz';
+
+        // ===== 可配置项：下载前二维码弹窗 =====
+        // 【在此处修改】二维码弹窗的内容
+        const QR_POPUP_CONFIG = {
+            // 扫码后跳转的链接
+            qrContent: 'https://www.xiaohongshu.com/user/profile/690ed3bc000000003702fca5',
+            // 弹窗标题
+            title: '🐾 关注星系瞳旅人',
+            // 二维码旁边的说明文字（支持 \\n 换行）
+            message: '长按识别公众号并关注，获取喵星抵达证明\n\n（不关注也能获取，但还是希望给个小小的支持呢）',
+            // 关闭按钮文字
+            closeText: '跳过，保存图片 →',
+        };
+        // ===== 可配置项结束 =====
+
+        let lastTicketData = null;
         let ownerAvatarDataUrl = '';
         let quotesLoaded = false;
         let quotesLoadPromise = null;
@@ -688,145 +695,498 @@
             `;
             
             document.getElementById('ticketContainer').innerHTML = ticketHTML;
+
+            lastTicketData = {
+                catName,
+                dateStr,
+                catSign: catSign || '喵座',
+                message: finalMessage,
+                ownerName,
+                ticketId,
+                qrData,
+                qrHint,
+                ownerAvatarDataUrl: ownerAvatarDataUrl || ''
+            };
             
             // 滚动到预览区（移动端）
             if(window.innerWidth < 1024) {
                 document.getElementById('ticketContainer').scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         }
+        // ============================================================
+        //  Canvas 票根绘制引擎（固定 600×900 比例，跨平台一致）
+        // ============================================================
+
+        function loadImage(src) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                img.onload = () => resolve(img);
+                img.onerror = () => resolve(null);
+                img.src = src;
+            });
+        }
+
+        function drawRoundRect(ctx, x, y, w, h, r) {
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.lineTo(x + w - r, y);
+            ctx.arcTo(x + w, y, x + w, y + r, r);
+            ctx.lineTo(x + w, y + h - r);
+            ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+            ctx.lineTo(x + r, y + h);
+            ctx.arcTo(x, y + h, x, y + h - r, r);
+            ctx.lineTo(x, y + r);
+            ctx.arcTo(x, y, x + r, y, r);
+            ctx.closePath();
+        }
+
+        function drawGoldBar(ctx, x, y, w, h) {
+            const grad = ctx.createLinearGradient(x, y, x + w, y);
+            grad.addColorStop(0, '#a16207');
+            grad.addColorStop(0.5, '#ca8a04');
+            grad.addColorStop(1, '#a16207');
+            ctx.fillStyle = grad;
+            ctx.fillRect(x, y, w, h);
+        }
+
+        function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+            const lines = [];
+            let line = '';
+            for (let i = 0; i < text.length; i++) {
+                const test = line + text[i];
+                if (ctx.measureText(test).width > maxWidth && line) {
+                    lines.push(line);
+                    line = text[i];
+                } else {
+                    line = test;
+                }
+            }
+            if (line) lines.push(line);
+            return lines;
+        }
+
+        async function renderTicketToCanvas(ticketData) {
+            const BASE_W = 600;
+            const BASE_H = 900;
+            const SCALE = 2;
+
+            const canvas = document.createElement('canvas');
+            canvas.width = BASE_W * SCALE;
+            canvas.height = BASE_H * SCALE;
+            const ctx = canvas.getContext('2d');
+            ctx.scale(SCALE, SCALE);
+
+            const [qrImage, avatarImage] = await Promise.all([
+                loadImage(ticketData.qrData || ''),
+                ticketData.ownerAvatarDataUrl ? loadImage(ticketData.ownerAvatarDataUrl) : Promise.resolve(null)
+            ]);
+
+            // 等待字体加载
+            try { await document.fonts.ready; } catch(e) {}
+
+            const FW = BASE_W;
+            const FH = BASE_H;
+            const PAD = 28;
+            const CX = PAD;
+            const CW = FW - PAD * 2;
+            const CORNER_R = 12;
+
+            // ---------- 1. 整体圆角裁剪 + 背景 ----------
+            ctx.save();
+            drawRoundRect(ctx, 0, 0, FW, FH, CORNER_R);
+            ctx.clip();
+
+            ctx.fillStyle = '#f5f5dc';
+            ctx.fillRect(0, 0, FW, FH);
+
+            // 淡金色高光
+            const bgGrad = ctx.createLinearGradient(0, 0, FW, 0);
+            bgGrad.addColorStop(0, 'rgba(255,255,255,0.15)');
+            bgGrad.addColorStop(0.5, 'rgba(255,255,255,0.05)');
+            bgGrad.addColorStop(1, 'rgba(255,255,255,0.15)');
+            ctx.fillStyle = bgGrad;
+            ctx.fillRect(0, 0, FW, FH);
+
+            // ---------- 2. 顶部金条 (12px) ----------
+            drawGoldBar(ctx, 0, 0, FW, 12);
+
+            // ---------- 3. 标题区域 ----------
+            ctx.save();
+            ctx.translate(530, 50);
+            ctx.rotate(-15 * Math.PI / 180);
+            ctx.strokeStyle = '#c41e3a';
+            ctx.lineWidth = 2.5;
+            ctx.font = 'bold 18px "ZCOOL XiaoWei", "Noto Serif SC", serif';
+            const stampW = ctx.measureText('已抵达').width + 20;
+            const stampH = 32;
+            drawRoundRect(ctx, -stampW/2, -stampH/2, stampW, stampH, 6);
+            ctx.stroke();
+            ctx.fillStyle = '#c41e3a';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('已抵达', 0, 0);
+            ctx.restore();
+
+            ctx.font = '48px serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = '#713f12';
+            ctx.fillText('🌟', FW / 2, 66);
+
+            ctx.font = 'bold 36px "ZCOOL XiaoWei", "Noto Serif SC", serif';
+            ctx.fillStyle = '#713f12';
+            ctx.fillText('喵星抵达证明', FW / 2, 116);
+
+            ctx.font = '16px "Noto Serif SC", serif';
+            ctx.fillStyle = 'rgba(161,98,7,0.6)';
+            ctx.fillText('ARRIVAL CERTIFICATE', FW / 2, 148);
+
+            // ---------- 4. 分割线 ----------
+            ctx.setLineDash([6, 6]);
+            ctx.strokeStyle = 'rgba(113,63,18,0.2)';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(CX, 166);
+            ctx.lineTo(CX + CW, 166);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // ---------- 5. 乘客信息卡 ----------
+            const cardY = 182;
+            const cardH = 150;
+            drawRoundRect(ctx, CX, cardY, CW, cardH, 8);
+            ctx.fillStyle = 'rgba(113,63,18,0.05)';
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(113,63,18,0.1)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            ctx.textBaseline = 'middle';
+            ctx.font = '15px "Noto Serif SC", serif';
+            ctx.fillStyle = 'rgba(161,98,7,0.6)';
+            ctx.textAlign = 'left';
+            ctx.fillText('Passenger Name', CX + 18, cardY + 24);
+            ctx.textAlign = 'right';
+            ctx.fillText('Class', CX + CW - 18, cardY + 24);
+
+            ctx.font = 'bold 24px "Noto Serif SC", serif';
+            ctx.fillStyle = '#713f12';
+            ctx.textAlign = 'left';
+            ctx.fillText(ticketData.catName || '未知喵星人', CX + 18, cardY + 60);
+            ctx.textAlign = 'right';
+            ctx.fillText('头等舱', CX + CW - 18, cardY + 60);
+
+            ctx.font = '15px "Noto Serif SC", serif';
+            ctx.fillStyle = 'rgba(161,98,7,0.6)';
+            ctx.textAlign = 'left';
+            ctx.fillText('Date of Arrival', CX + 18, cardY + 94);
+            ctx.textAlign = 'right';
+            ctx.fillText('Constellation', CX + CW - 18, cardY + 94);
+
+            ctx.font = 'bold 20px "Noto Serif SC", serif';
+            ctx.fillStyle = '#713f12';
+            ctx.textAlign = 'left';
+            ctx.fillText(ticketData.dateStr || '2026年4月24日', CX + 18, cardY + 128);
+            ctx.textAlign = 'right';
+            ctx.fillText(ticketData.catSign || '喵座', CX + CW - 18, cardY + 128);
+
+            // ---------- 6. 寄语区 ----------
+            const msgY = 348;
+            const msgH = 250;
+
+            drawRoundRect(ctx, CX, msgY, CW, msgH, 8);
+            ctx.strokeStyle = 'rgba(113,63,18,0.2)';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            const labelText = 'Message to Earth';
+            ctx.font = '14px "Noto Serif SC", serif';
+            const labelW = ctx.measureText(labelText).width + 16;
+            ctx.fillStyle = '#f5f5dc';
+            drawRoundRect(ctx, CX + 14, msgY - 10, labelW, 22, 4);
+            ctx.fill();
+            ctx.fillStyle = 'rgba(161,98,7,0.6)';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(labelText, CX + 14 + 8, msgY);
+
+            const msg = ticketData.message || '铲屎官，谢谢你给我一个温暖的家。';
+            ctx.font = '24px "ZCOOL XiaoWei", "Noto Serif SC", serif';
+            ctx.fillStyle = '#713f12';
+            ctx.textBaseline = 'top';
+            ctx.textAlign = 'left';
+            const lines = wrapText(ctx, msg, CX + 18, msgY + 24, CW - 36, 36);
+            const lineH = 36;
+            lines.forEach((line, i) => {
+                ctx.fillText(line, CX + 18, msgY + 24 + i * lineH);
+            });
+
+            const sigY = msgY + msgH - 34;
+            ctx.font = '18px "ZCOOL XiaoWei", "Noto Serif SC", serif';
+            ctx.fillStyle = 'rgba(113,63,18,0.6)';
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(`—— 爱你的 ${ticketData.catName || '未知喵星人'}`, CX + CW - 18, sigY);
+
+            // ---------- 7. 主人信息 ----------
+            const ownY = 614;
+            const ownH = 58;
+            drawRoundRect(ctx, CX, ownY, CW, ownH, 8);
+            ctx.fillStyle = 'rgba(113,63,18,0.05)';
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(113,63,18,0.1)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            const avX = CX + 14;
+            const avY = ownY + 9;
+            const avSize = 40;
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(avX + avSize/2, avY + avSize/2, avSize/2, 0, Math.PI * 2);
+            ctx.clip();
+            if (avatarImage) {
+                ctx.drawImage(avatarImage, avX, avY, avSize, avSize);
+            } else {
+                ctx.fillStyle = 'rgba(113,63,18,0.15)';
+                ctx.fill();
+                ctx.font = '20px serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillStyle = '#713f12';
+                ctx.fillText('👤', avX + avSize/2, avY + avSize/2);
+            }
+            ctx.restore();
+
+            ctx.textBaseline = 'middle';
+            ctx.font = '14px "Noto Serif SC", serif';
+            ctx.fillStyle = 'rgba(161,98,7,0.6)';
+            ctx.textAlign = 'left';
+            ctx.fillText('Recipient (Owner)', avX + avSize + 14, ownY + 19);
+
+            ctx.font = 'bold 19px "ZCOOL XiaoWei", "Noto Serif SC", serif';
+            ctx.fillStyle = '#713f12';
+            ctx.fillText(`${ticketData.ownerName || '铲屎官'} 收`, avX + avSize + 14, ownY + 44);
+
+            // ---------- 8. 底部信息 + QR（参照预览 align-bottom 布局） ----------
+            const botAlignY = 840;
+            const qrSize = 100;
+            const qrX = CX + CW - qrSize;
+            const qrY = botAlignY - qrSize;
+
+            // 右：二维码
+            if (qrImage) {
+                ctx.save();
+                drawRoundRect(ctx, qrX, qrY, qrSize, qrSize, 6);
+                ctx.clip();
+                ctx.drawImage(qrImage, qrX, qrY, qrSize, qrSize);
+                ctx.restore();
+            }
+
+            // 右：QR 提示（二维码下方）
+            const qrHintY = qrY + qrSize + 6;
+            ctx.textBaseline = 'top';
+            ctx.textAlign = 'right';
+            ctx.font = '12px "Noto Serif SC", serif';
+            ctx.fillStyle = '#713f12';
+            ctx.fillText(ticketData.qrHint || '想知道我在喵星的新造型吗？', CX + CW, qrHintY);
+
+            // 左：票号（与 QR 提示同高对齐）
+            ctx.textBaseline = 'top';
+            ctx.textAlign = 'left';
+
+            ctx.font = '14px "Noto Serif SC", serif';
+            ctx.fillStyle = 'rgba(161,98,7,0.4)';
+            ctx.fillText('TICKET NO.', CX, qrHintY - 56);
+
+            ctx.font = 'bold 20px "ZCOOL XiaoWei", "Courier New", monospace';
+            ctx.fillStyle = '#713f12';
+            ctx.fillText(ticketData.ticketId || 'MEOW-WWLFKR', CX, qrHintY - 28);
+
+            ctx.font = '14px "Noto Serif SC", serif';
+            ctx.fillStyle = 'rgba(161,98,7,0.4)';
+            ctx.fillText('ISSUED BY MEOW STAR ALLIANCE', CX, qrHintY);
+
+            // 装饰爪印
+            ctx.save();
+            ctx.globalAlpha = 0.08;
+            ctx.font = '50px serif';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'bottom';
+            ctx.translate(CX + 4, qrY + qrSize + 10);
+            ctx.rotate(12 * Math.PI / 180);
+            ctx.fillText('🐾', 0, 0);
+            ctx.restore();
+
+            ctx.save();
+            ctx.globalAlpha = 0.08;
+            ctx.font = '36px serif';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            ctx.translate(CX + CW - 40, 430);
+            ctx.rotate(-12 * Math.PI / 180);
+            ctx.fillText('🐾', 0, 0);
+            ctx.restore();
+
+            // ---------- 10. 底部金条 (12px, 与顶部一致) ----------
+            drawGoldBar(ctx, 0, FH - 12, FW, 12);
+
+            // ---------- 恢复裁剪，绘制外框虚线 ----------
+            ctx.restore();
+
+            ctx.beginPath();
+            ctx.setLineDash([8, 6]);
+            ctx.strokeStyle = 'rgba(212,196,168,0.7)';
+            ctx.lineWidth = 2.5;
+            ctx.moveTo(CORNER_R, 1);
+            ctx.lineTo(FW - CORNER_R, 1);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(CORNER_R, FH - 1);
+            ctx.lineTo(FW - CORNER_R, FH - 1);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            return canvas;
+        }
+
+        // ============================================================
+        //  下载 / 保存
+        // ============================================================
+
         async function downloadTicketImage() {
             try {
                 const ticketElement = document.getElementById('ticketCard');
-                if (!ticketElement) {
+                if (!ticketElement || !lastTicketData) {
                     alert('请先生成纪念票根');
                     return;
                 }
 
-                const catName = document.getElementById('catName').value || '喵星人';
-                const safeName = catName.replace(/[\\/:*?"<>|]/g, '_');
-                const fileName = `${safeName}-喵星抵达证明.png`;
-                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-                const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+                const safeName = lastTicketData.catName.replace(/[\\/:*?"<>|]/g, '_');
+                const fileName = `${safeName}-喵星抵达证明`;
 
-                const scale = Math.max(2, Math.min(3, window.devicePixelRatio || 1));
-                
-                const canvas = await html2canvas(ticketElement, {
-                    scale,
-                    useCORS: true,
-                    backgroundColor: '#f5f5dc',
-                    onclone: async (clonedDoc) => {
-                        const clonedTicket = clonedDoc.getElementById('ticketCard');
-                        if (clonedTicket) {
-                            clonedTicket.style.maskImage = 'none';
-                            clonedTicket.style.webkitMaskImage = 'none';
-                            clonedTicket.style.backgroundImage = 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%)';
-                        }
-                        const allElements = clonedTicket ? clonedTicket.querySelectorAll('*') : [];
-                        allElements.forEach(el => {
-                            const computed = clonedDoc.defaultView.getComputedStyle(el);
-                            if (computed.maskImage && computed.maskImage.includes('svg')) {
-                                el.style.maskImage = 'none';
-                            }
-                            if (computed.webkitMaskImage && computed.webkitMaskImage.includes('svg')) {
-                                el.style.webkitMaskImage = 'none';
-                            }
-                            if (computed.backgroundImage && computed.backgroundImage.includes('data:image/svg')) {
-                                el.style.backgroundImage = 'none';
-                            }
-                        });
-                        const perforations = clonedTicket ? clonedTicket.querySelectorAll('.perforation') : [];
-                        perforations.forEach(p => {
-                            p.style.backgroundImage = 'radial-gradient(circle, transparent 6px, #f5f5dc 6px)';
-                        });
-                        const msgLabels = clonedTicket ? clonedTicket.querySelectorAll('.bg-\\[\\#f5f5dc\\]') : [];
-                        msgLabels.forEach(l => {
-                            l.style.backgroundColor = '#f5f5dc';
-                        });
-                        const svgImgs = clonedTicket ? clonedTicket.querySelectorAll('img[src^="data:image/svg"]') : [];
-                        for (const img of svgImgs) {
-                            try {
-                                const imgEl = new Image();
-                                imgEl.crossOrigin = 'anonymous';
-                                await new Promise((resolve, reject) => {
-                                    imgEl.onload = resolve;
-                                    imgEl.onerror = reject;
-                                    imgEl.src = img.getAttribute('src');
-                                });
-                                const c = clonedDoc.createElement('canvas');
-                                c.width = imgEl.naturalWidth || 80;
-                                c.height = imgEl.naturalHeight || 80;
-                                const ctx = c.getContext('2d');
-                                ctx.drawImage(imgEl, 0, 0);
-                                img.setAttribute('src', c.toDataURL('image/png'));
-                            } catch(e) {
-                                img.setAttribute('src', '');
-                            }
-                        }
+                showQRPopup(async () => {
+                    try {
+                        const canvas = await renderTicketToCanvas(lastTicketData);
+                        showSaveImagePopup(canvas, fileName);
+                    } catch (e) {
+                        console.error('Canvas render error:', e);
+                        alert('图片生成失败，请稍后重试');
                     }
                 });
-
-                if (isIOS || isSafari) {
-                    try {
-                        const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
-                        if (!blob) {
-                            alert('图片生成失败，请重试。');
-                            return;
-                        }
-                        
-                        const url = URL.createObjectURL(blob);
-                        
-                        if (isIOS) {
-                            let overlay = document.getElementById('iosSaveOverlay');
-                            if (!overlay) {
-                                overlay = document.createElement('div');
-                                overlay.id = 'iosSaveOverlay';
-                                overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.92);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;';
-                                overlay.innerHTML = `
-                                    <div style="position:absolute;top:16px;right:16px;cursor:pointer;color:#fff;font-size:28px;padding:8px;" onclick="document.getElementById('iosSaveOverlay').style.display='none'">✕</div>
-                                    <img id="iosSaveImg" style="max-width:100%;max-height:70vh;height:auto;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.5);" />
-                                    <div style="color:#fff;margin-top:20px;text-align:center;">
-                                        <p style="font-size:16px;margin:0 0 8px;">👆 长按上方图片</p>
-                                        <p style="font-size:14px;opacity:0.7;margin:0;">选择"存储图像"保存到相册</p>
-                                    </div>
-                                `;
-                                document.body.appendChild(overlay);
-                            }
-                            overlay.querySelector('#iosSaveImg').src = url;
-                            overlay.style.display = 'flex';
-                        } else {
-                            const a = document.createElement('a');
-                            a.href = url;
-                            a.download = fileName;
-                            document.body.appendChild(a);
-                            a.click();
-                            a.remove();
-                            setTimeout(() => URL.revokeObjectURL(url), 1000);
-                        }
-                    } catch (iosError) {
-                        console.error('iOS download error:', iosError);
-                        alert('iOS 下载需要您截图保存。请同时按住电源键和音量键截图。');
-                    }
-                    return;
-                }
-
-                canvas.toBlob((blob) => {
-                    if (!blob) {
-                        alert('图片生成失败，请重试。');
-                        return;
-                    }
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = fileName;
-                    a.target = '_self';
-                    document.body.appendChild(a);
-                    a.click();
-                    a.remove();
-                    URL.revokeObjectURL(url);
-                }, 'image/png');
             } catch (error) {
                 console.error('Download error:', error);
                 alert('导出失败: ' + (error.message || '请稍后重试'));
+            }
+        }
+
+        function showQRPopup(onClose) {
+            let overlay = document.getElementById('qrPopupOverlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.id = 'qrPopupOverlay';
+                document.body.appendChild(overlay);
+            }
+
+            const qrDataUrl = generateScannableQR(QR_POPUP_CONFIG.qrContent) || generateDecorativeQR();
+
+            overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.88);z-index:9998;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;';
+            overlay.innerHTML = `
+                <div style="background:#fff;max-width:380px;width:100%;border-radius:16px;padding:32px 28px;position:relative;box-sizing:border-box;">
+                    <div style="text-align:center;font-size:20px;font-weight:bold;color:#1a1a2e;margin-bottom:20px;">${QR_POPUP_CONFIG.title}</div>
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:16px;">
+                        <div style="width:150px;height:150px;border:2px solid #eee;border-radius:8px;padding:8px;flex-shrink:0;">
+                            <img src="${qrDataUrl}" alt="QR" style="width:100%;height:100%;display:block;" />
+                        </div>
+                        <div style="color:#555;font-size:14px;line-height:1.8;text-align:center;white-space:pre-wrap;">${QR_POPUP_CONFIG.message}</div>
+                    </div>
+                    <button id="qrPopupCloseBtn" style="display:block;margin:20px auto 0;padding:10px 24px;background:#f0f0f0;border:none;border-radius:8px;color:#333;font-size:14px;cursor:pointer;width:100%;max-width:220px;">
+                        ${QR_POPUP_CONFIG.closeText}
+                    </button>
+                </div>
+            `;
+
+            document.getElementById('qrPopupCloseBtn').onclick = () => {
+                overlay.style.display = 'none';
+                if (typeof onClose === 'function') onClose();
+            };
+
+            overlay.style.display = 'flex';
+        }
+
+        function showSaveImagePopup(canvas, fileName) {
+            let overlay = document.getElementById('saveImageOverlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.id = 'saveImageOverlay';
+                document.body.appendChild(overlay);
+            }
+
+            try {
+                const dataUrl = canvas.toDataURL('image/png');
+                const isMobile = /iPad|iPhone|iPod|Android/.test(navigator.userAgent);
+                const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+                const needsLongPress = isMobile || isSafari;
+
+                overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.92);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;';
+                overlay.innerHTML = `
+                    <div style="position:absolute;top:16px;right:16px;cursor:pointer;color:#fff;font-size:28px;padding:8px;z-index:10;" onclick="document.getElementById('saveImageOverlay').style.display='none'">✕</div>
+                    <img id="saveImagePreview" style="max-width:min(100%, 420px);max-height:70vh;height:auto;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.5);" />
+                    <div style="color:#fff;margin-top:20px;text-align:center;">
+                        ${needsLongPress
+                            ? '<p style="font-size:16px;margin:0 0 8px;">👆 长按或长触上方图片</p><p style="font-size:14px;opacity:0.7;margin:0;">选择「存储图像」保存到相册</p>'
+                            : '<p style="font-size:16px;margin:0 0 8px;">👇 点击下方按钮下载</p>'}
+                    </div>
+                    ${!needsLongPress
+                        ? `<button id="saveImageBtn" style="margin-top:16px;padding:10px 36px;background:#4ade80;border:none;border-radius:10px;color:#000;font-size:16px;font-weight:bold;cursor:pointer;">⬇ 下载图片</button>`
+                        : `<button onclick="document.getElementById('saveImageOverlay').style.display='none'" style="margin-top:16px;padding:8px 28px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);border-radius:8px;color:#fff;font-size:14px;cursor:pointer;">关闭</button>`}
+                `;
+
+                const img = document.getElementById('saveImagePreview');
+                img.src = dataUrl;
+
+                if (!needsLongPress) {
+                    document.getElementById('saveImageBtn').onclick = () => {
+                        try {
+                            canvas.toBlob((blob) => {
+                                if (!blob) {
+                                    const a = document.createElement('a');
+                                    a.href = dataUrl;
+                                    a.download = fileName + '.png';
+                                    a.style.display = 'none';
+                                    document.body.appendChild(a);
+                                    a.click();
+                                    a.remove();
+                                    return;
+                                }
+                                const url = URL.createObjectURL(blob);
+                                const a = document.createElement('a');
+                                a.href = url;
+                                a.download = fileName + '.png';
+                                a.style.display = 'none';
+                                document.body.appendChild(a);
+                                a.click();
+                                a.remove();
+                                setTimeout(() => URL.revokeObjectURL(url), 1000);
+                            }, 'image/png');
+                        } catch(e) {
+                            const a = document.createElement('a');
+                            a.href = dataUrl;
+                            a.download = fileName + '.png';
+                            a.style.display = 'none';
+                            document.body.appendChild(a);
+                            a.click();
+                            a.remove();
+                        }
+                    };
+                }
+
+                overlay.style.display = 'flex';
+            } catch(e) {
+                console.error('Save popup error:', e);
+                alert('图片保存失败，请尝试截图保存');
             }
         }
 
